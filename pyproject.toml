@@ -1,0 +1,19 @@
+[project]
+name = "codex-ad"
+version = "0.1.0"
+description = "Shareable Codex plugin for structured static ad image generation"
+requires-python = ">=3.9"
+dependencies = [
+  "openai>=1.0.0",
+  "pillow>=10.0.0",
+  "pyyaml>=6.0.0"
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest>=8.0.0"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

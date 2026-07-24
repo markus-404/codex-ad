@@ -1,0 +1,41 @@
+name: Sample Foods
+website: https://example.com
+vertical:
+  - Food and Beverage
+description: Premium pantry products for busy home cooks.
+unique_value_propositions:
+  - Chef-level flavor in under ten minutes
+  - Simple ingredients
+  - Reliable weeknight meals
+target_audience: Busy adults who want better dinners without complicated prep.
+category: Pantry sauce
+category_needs:
+  - fast meal prep
+  - consistent flavor
+  - premium feel
+notes: Sample data for testing only.
+guidelines:
+  logos:
+    - path: assets/sample-logo.png
+      label: Sample Foods logo
+      default: true
+  colors:
+    - "#337AB7"
+    - "#FFFFFF"
+    - "#DAB86D"
+  fonts:
+    headline:
+      family: Cormorant Garamond
+      weight: regular
+    body:
+      family: Bricolage Grotesque
+      weight: regular
+  tone: Warm, practical, premium, and concise.
+  preferred_words:
+    - simple
+    - chef-level
+    - weeknight
+  avoid_words:
+    - cheap
+    - artificial
+    - complicated

@@ -1,0 +1,18 @@
+name: Sample Bottle
+url: https://example.com/products/sample-bottle
+categories:
+  - Pantry sauce
+description: A premium ready-to-use sauce for fast weeknight dinners.
+unique_selling_points:
+  - Ready in under ten minutes
+  - Balanced flavor
+  - Premium glass bottle
+images:
+  - path: assets/sample-bottle.png
+    label: Sample Bottle product cutout
+related_scenarios:
+  - Weeknight dinner upgrade
+related_personas:
+  - Busy Home Cook
+awareness_level: L4 Product/brand aware
+market_sophistication: L4

@@ -1,0 +1,4 @@
+interface:
+  display_name: "ad_maker"
+  short_description: "structured ad image prompts"
+  default_prompt: "Use $ad-maker to create structured static ad image prompts from brand, product, persona, scenario, and reference assets."

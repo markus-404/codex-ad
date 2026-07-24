@@ -1,0 +1,33 @@
+{
+  "name": "ad-maker",
+  "version": "0.1.0",
+  "description": "structured static ad image generation workflow for Codex.",
+  "author": {
+    "name": "markus-404"
+  },
+  "license": "UNLICENSED",
+  "keywords": [
+    "ads",
+    "image-generation",
+    "creative",
+    "prompts"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "ad_maker",
+    "shortDescription": "structured ad image prompts",
+    "longDescription": "Generate structured static ad briefs, six-slot prompts, variants, iteration ladders, product compositing instructions, and refinement prompts from brand, product, persona, scenario, natural-language, and reference-ad context.",
+    "developerName": "markus-404",
+    "category": "Productivity",
+    "capabilities": [
+      "Generate",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Create structured ad prompts.",
+      "Iterate this winning ad.",
+      "Vary this ad by layout."
+    ],
+    "brandColor": "#337AB7"
+  }
+}

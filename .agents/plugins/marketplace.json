@@ -1,0 +1,20 @@
+{
+  "name": "codex-ad",
+  "interface": {
+    "displayName": "Codex Ad"
+  },
+  "plugins": [
+    {
+      "name": "ad-maker",
+      "source": {
+        "source": "local",
+        "path": "./plugins/ad-maker"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
