@@ -11,13 +11,13 @@ Use this skill to prepare structured static ad image generation work. Stay insid
 
 1. Identify the generation mode: Clone, Iterate, or Natural-language brief.
 2. Read `references/context-schema.md` before using brand, product, persona, or scenario files.
-3. Read `references/prompt-template.md` before writing any generation prompt.
+3. Read `references/prompt-template.md` before writing any generation prompt. Write the `Visual` and `Layout` slots yourself for every prompt, and vary them across a variant set.
 4. Read `references/generation-modes.md` when a request names Clone, Iterate, Natural-language brief, reference ads, variants, or natural-language ad generation.
 5. Read `references/iteration-ladder.md` for requests that turn one winning ad into multiple concepts.
 6. Read `references/taxonomies.md` for archetype, objective, ratio, copy-framework, or creative-tag choices.
 7. Read `references/product-fidelity.md` when exact product appearance matters.
 8. Read `references/refinement-workflows.md` for reuse, vary, text edit, or inpaint requests.
-9. Use `scripts/compile_prompt.py` when the user asks for deterministic prompt JSON or reusable prompt files.
+9. Use `scripts/compile_prompt.py` when the user asks for deterministic prompt JSON or reusable prompt files. Pass your authored slots with `--visual` and `--layout`; omitting them falls back to generic template wording that is not suitable for a delivered ad.
 10. Use `scripts/create_iteration_ladder.py` when the user asks to turn one winning ad into strategies and ad ideas.
 11. Use `scripts/generate_image.py` when the user asks for a dry-run image payload or API execution from compiled prompt JSON.
 12. Use `scripts/composite_product.py` when the user asks to preserve exact product appearance by placing a real product PNG onto a generated background.

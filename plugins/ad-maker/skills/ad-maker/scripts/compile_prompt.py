@@ -95,10 +95,18 @@ def build_prompt(brand: dict, product: dict, persona: dict, scenario: dict, args
     headline_font = font_label(brand.get("guidelines", {}).get("fonts", {}).get("headline", {}))
     body_font = font_label(brand.get("guidelines", {}).get("fonts", {}).get("body", {}))
 
+    visual = args.visual or (
+        f"{scene} Feature {product_name} for {persona_name}, with a small value callout reading \"{args.offer}\"."
+    )
+    layout = args.layout or (
+        f"Place uploaded product #1 as the central visual occupying at least 12% of the canvas; "
+        f"place headline \"{args.headline}\" at top center and offer \"{args.offer}\" in a rounded callout near the product."
+    )
+
     prompt_lines = [
-        f"- Visual: {scene} Feature {product_name} for {persona_name}, with a small value callout reading \"{args.offer}\".",
+        f"- Visual: {visual}",
         f"- Color: Use {colors} as the brand palette, with the first color as the dominant accent, white or open space for clarity, and premium highlights where useful.",
-        f"- Layout: Place uploaded product #1 as the central visual occupying at least 12% of the canvas; place headline \"{args.headline}\" at top center and offer \"{args.offer}\" in a rounded callout near the product.",
+        f"- Layout: {layout}",
         f"- Text: Headline \"{args.headline}\"; subline \"{args.subline}\"; offer \"{args.offer}\".",
         f"- Fonts: Use {headline_font} for the headline and {body_font} for subline, callouts, and body copy.",
         "- Logo: Place uploaded logo #0 at top left; preserve the uploaded wordmark exactly and do not redraw, restyle, re-letter, or substitute typography.",
@@ -155,6 +163,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--headline")
     parser.add_argument("--subline")
     parser.add_argument("--offer")
+    parser.add_argument("--visual")
+    parser.add_argument("--layout")
     parser.add_argument("--source-prompt-json")
     parser.add_argument("--refine-mode", choices=sorted(REFINE_MODES))
     parser.add_argument("--edit-instruction")

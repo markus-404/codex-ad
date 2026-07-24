@@ -59,6 +59,28 @@ def test_compile_prompt_writes_six_slots_in_order(tmp_path):
     assert data["image_refs"][1]["role"] == "product"
 
 
+def test_compile_prompt_uses_authored_visual_and_layout(tmp_path):
+    visual = "Two friends laugh over a shared bowl of pasta as steam rises in late golden light."
+    layout = "Product sits low-right on the diagonal, occupying at least 18% of canvas, headline \"Simple dinners, better flavor\" stacked upper-left against negative space."
+    result, output = run_compile(tmp_path, ["--visual", visual, "--layout", layout])
+    assert result.returncode == 0, result.stderr
+    data = json.loads(output.read_text())
+    assert f"- Visual: {visual}" in data["prompt"]
+    assert f"- Layout: {layout}" in data["prompt"]
+    slots = ["- Visual:", "- Color:", "- Layout:", "- Text:", "- Fonts:", "- Logo:"]
+    positions = [data["prompt"].index(slot) for slot in slots]
+    assert positions == sorted(positions)
+    assert 'Headline "Simple dinners, better flavor"' in data["prompt"]
+
+
+def test_compile_prompt_falls_back_to_template_slots(tmp_path):
+    result, output = run_compile(tmp_path)
+    assert result.returncode == 0, result.stderr
+    data = json.loads(output.read_text())
+    assert "- Visual: A clean kitchen counter in warm morning light" in data["prompt"]
+    assert "- Layout: Place uploaded product #1 as the central visual" in data["prompt"]
+
+
 def test_compile_prompt_rejects_invalid_ratio(tmp_path):
     result, _ = run_compile(tmp_path, ["--ratio", "3:2"])
     assert result.returncode != 0

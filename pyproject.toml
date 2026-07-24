@@ -1,6 +1,6 @@
 [project]
 name = "codex-ad"
-version = "0.1.0"
+version = "0.1.1"
 description = "Shareable Codex plugin for structured static ad image generation"
 requires-python = ">=3.9"
 dependencies = [

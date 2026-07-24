@@ -1,6 +1,6 @@
 {
   "name": "ad-maker",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "structured static ad image generation workflow for Codex.",
   "author": {
     "name": "markus-404"
