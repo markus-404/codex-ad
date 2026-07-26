@@ -39,10 +39,15 @@
 
 ## Aspect Ratios
 
-- Match original
-- 9:16
-- 4:5
+Generation supports exactly these three ratios (accepted by `compile_prompt.py`
+and `generate_image.py`):
+
 - 1:1
+- 4:5
+- 9:16
+
+Refinements do not take a ratio flag; they inherit the source ad's ratio from
+its compiled prompt JSON, which is structured ad platform's "match original" behavior.
 
 ## Copywriting Frameworks
 

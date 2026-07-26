@@ -36,9 +36,42 @@ def test_generate_image_dry_run_prints_payload(tmp_path):
     result = subprocess.run(args, cwd=ROOT, text=True, capture_output=True)
     assert result.returncode == 0, result.stderr
     payload = json.loads(result.stdout)
-    assert payload["model"] == "gpt-image-2"
-    assert payload["size"] == "1024x1024"
-    assert payload["n"] == 1
+    request = payload["api_request"]
+    assert payload["endpoint"] == "images.generate"
+    assert request["model"] == "gpt-image-2"
+    assert request["size"] == "1024x1024"
+    assert request["quality"] == "medium"
+    assert request["n"] == 1
+    # negative_prompt is not an API param; it is folded into the prompt text.
+    assert "negative_prompt" not in request
+    assert "Avoid the following:" in request["prompt"]
+    assert "No garbled typography" in request["prompt"]
+
+
+def test_generate_image_rejects_zero_count(tmp_path):
+    prompt_json = tmp_path / "prompt.json"
+    prompt_json.write_text(json.dumps({
+        "prompt": "- Visual: Test scene",
+        "negative_prompt": "",
+        "image_refs": [],
+        "metadata": {"ratio": "1:1", "size": "1024x1024", "variant_count": 1},
+    }))
+    args = [
+        sys.executable,
+        str(SCRIPT),
+        "--prompt-json",
+        str(prompt_json),
+        "--count",
+        "0",
+        "--ratio",
+        "1:1",
+        "--out-dir",
+        str(tmp_path / "images"),
+        "--dry-run",
+    ]
+    result = subprocess.run(args, cwd=ROOT, text=True, capture_output=True)
+    assert result.returncode != 0
+    assert "--count must be between 1 and 10" in result.stderr
 
 
 def test_generate_image_requires_key_without_dry_run(tmp_path, monkeypatch):

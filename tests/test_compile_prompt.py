@@ -81,6 +81,23 @@ def test_compile_prompt_falls_back_to_template_slots(tmp_path):
     assert "- Layout: Place uploaded product #1 as the central visual" in data["prompt"]
 
 
+def test_compile_prompt_resolves_ref_paths_to_existing_files(tmp_path):
+    # Run from an unrelated cwd to prove paths are absolute, not cwd-relative.
+    result, output = run_compile(tmp_path)
+    assert result.returncode == 0, result.stderr
+    data = json.loads(output.read_text())
+    for ref in data["image_refs"]:
+        ref_path = Path(ref["path"])
+        assert ref_path.is_absolute(), ref["path"]
+        assert ref_path.exists(), ref["path"]
+
+
+def test_compile_prompt_rejects_zero_variant_count(tmp_path):
+    result, _ = run_compile(tmp_path, ["--variant-count", "0"])
+    assert result.returncode != 0
+    assert "--variant-count must be at least 1" in result.stderr
+
+
 def test_compile_prompt_rejects_invalid_ratio(tmp_path):
     result, _ = run_compile(tmp_path, ["--ratio", "3:2"])
     assert result.returncode != 0

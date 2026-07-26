@@ -1,6 +1,6 @@
 ---
 name: ad-maker
-description: Create structured static ad image generation briefs, six-slot prompts, negative prompts, ordered image reference lists, variants, iteration ladders, product compositing instructions, and refinement prompts from brand, product, persona, scenario, natural-language, or reference-ad inputs. Use when Codex needs to generate or prepare static ad images using Clone, Iterate, or natural-language brief workflows.
+description: Use when Codex needs to generate or prepare structured static ad images — six-slot prompts, negative prompts, ordered image reference lists, variants, iteration ladders, product compositing instructions, or refinement prompts — from brand, product, persona, scenario, natural-language, or reference-ad inputs using Clone, Iterate, or natural-language brief workflows.
 ---
 
 # ad-maker

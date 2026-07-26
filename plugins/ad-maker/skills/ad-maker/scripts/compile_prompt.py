@@ -59,7 +59,16 @@ def font_label(font: dict) -> str:
     return f"{family} {weight}"
 
 
-def collect_image_refs(brand: dict, product: dict) -> list:
+def resolve_ref_path(raw_path: str, base_dir: Path) -> str:
+    if not raw_path:
+        return ""
+    candidate = Path(raw_path)
+    if not candidate.is_absolute():
+        candidate = base_dir / candidate
+    return str(candidate.resolve())
+
+
+def collect_image_refs(brand: dict, product: dict, brand_dir: Path, product_dir: Path) -> list:
     refs = []
     logos = brand.get("guidelines", {}).get("logos", [])
     default_logo = next((logo for logo in logos if logo.get("default")), logos[0] if logos else None)
@@ -67,14 +76,14 @@ def collect_image_refs(brand: dict, product: dict) -> list:
         refs.append({
             "index": len(refs),
             "role": "logo",
-            "path": default_logo.get("path", ""),
+            "path": resolve_ref_path(default_logo.get("path", ""), brand_dir),
             "label": default_logo.get("label", f"{brand.get('name', 'Brand')} logo"),
         })
     for image in product.get("images", []):
         refs.append({
             "index": len(refs),
             "role": "product",
-            "path": image.get("path", ""),
+            "path": resolve_ref_path(image.get("path", ""), product_dir),
             "label": image.get("label", f"{product.get('name', 'Product')} product image"),
         })
     return refs
@@ -85,6 +94,8 @@ def build_prompt(brand: dict, product: dict, persona: dict, scenario: dict, args
         raise ValueError(f"Unsupported ratio: {args.ratio}")
     if args.mode not in MODES:
         raise ValueError(f"Unsupported mode: {args.mode}")
+    if args.variant_count < 1:
+        raise ValueError("--variant-count must be at least 1.")
 
     brand_name = brand["name"]
     product_name = product["name"]
@@ -115,7 +126,12 @@ def build_prompt(brand: dict, product: dict, persona: dict, scenario: dict, args
     return {
         "prompt": "\n".join(prompt_lines),
         "negative_prompt": "\n".join(NEGATIVE_PROMPT_LINES),
-        "image_refs": collect_image_refs(brand, product),
+        "image_refs": collect_image_refs(
+            brand,
+            product,
+            Path(args.brand).resolve().parent,
+            Path(args.product).resolve().parent,
+        ),
         "metadata": {
             "mode": args.mode,
             "objective": args.objective,
