@@ -58,7 +58,7 @@ def build_idea(strategy_name: str, suffix: str, product: dict, persona: dict, sc
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Create an structured 3x4 iteration ladder.")
+    parser = argparse.ArgumentParser(description="Create a structured 3x4 static ad iteration ladder.")
     parser.add_argument("--brand", required=True)
     parser.add_argument("--product", required=True)
     parser.add_argument("--persona", required=True)

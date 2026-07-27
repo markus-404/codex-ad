@@ -13,7 +13,7 @@ RATIO_TO_SIZE = {
     "9:16": "1152x2048",
 }
 
-MODES = {"clone", "iterate", "brief"}
+MODES = {"brief", "clone", "iterate"}
 REFINE_MODES = {
     "reuse_prompt",
     "reuse_ad_brief",

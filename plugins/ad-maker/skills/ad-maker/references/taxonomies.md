@@ -47,7 +47,7 @@ and `generate_image.py`):
 - 9:16
 
 Refinements do not take a ratio flag; they inherit the source ad's ratio from
-its compiled prompt JSON, which is structured ad platform's "match original" behavior.
+its compiled prompt JSON, which is the "match original" behavior.
 
 ## Copywriting Frameworks
 

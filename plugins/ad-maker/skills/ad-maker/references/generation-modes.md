@@ -33,7 +33,7 @@ Output:
 - six-slot prompt per selected ad idea
 - metadata with mode `iterate`
 
-## Natural-language brief
+## Natural-Language Brief
 
 Use when the user gives a natural-language static ad request.
 

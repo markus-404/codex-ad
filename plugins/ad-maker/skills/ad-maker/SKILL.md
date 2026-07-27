@@ -1,6 +1,6 @@
 ---
 name: ad-maker
-description: Use when Codex needs to generate or prepare structured static ad images — six-slot prompts, negative prompts, ordered image reference lists, variants, iteration ladders, product compositing instructions, or refinement prompts — from brand, product, persona, scenario, natural-language, or reference-ad inputs using Clone, Iterate, or natural-language brief workflows.
+description: Use when Codex needs to generate or prepare structured static ad images — six-slot prompts, negative prompts, ordered image reference lists, variants, iteration ladders, product compositing instructions, or refinement prompts — from brand, product, persona, scenario, natural-language, or reference-ad inputs.
 ---
 
 # ad-maker
@@ -9,10 +9,10 @@ Use this skill to prepare structured static ad image generation work. Stay insid
 
 ## Workflow
 
-1. Identify the generation mode: Clone, Iterate, or Natural-language brief.
+1. Identify the generation mode: Clone, Iterate, or natural-language brief.
 2. Read `references/context-schema.md` before using brand, product, persona, or scenario files.
 3. Read `references/prompt-template.md` before writing any generation prompt. Write the `Visual` and `Layout` slots yourself for every prompt, and vary them across a variant set.
-4. Read `references/generation-modes.md` when a request names Clone, Iterate, Natural-language brief, reference ads, variants, or natural-language ad generation.
+4. Read `references/generation-modes.md` when a request names Clone, Iterate, reference ads, variants, or natural-language ad generation.
 5. Read `references/iteration-ladder.md` for requests that turn one winning ad into multiple concepts.
 6. Read `references/taxonomies.md` for archetype, objective, ratio, copy-framework, or creative-tag choices.
 7. Read `references/product-fidelity.md` when exact product appearance matters.
@@ -46,4 +46,4 @@ For product-fidelity requests, preserve the supplied logo and product references
 
 ## Exclusions
 
-Do not perform structured ad platform ad library scraping, Meta analytics, analytics grading, bulk launch, full layered raster editing editing, or full structured ad platform app/UI cloning.
+Do not perform ad-library scraping, paid-media analytics, bulk launch tooling, full layered raster editing, or full third-party app/UI cloning.
