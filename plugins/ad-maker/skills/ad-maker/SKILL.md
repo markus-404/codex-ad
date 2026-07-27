@@ -11,16 +11,19 @@ Use this skill to prepare structured static ad image generation work. Stay insid
 
 1. Identify the generation mode: Clone, Iterate, or natural-language brief.
 2. Read `references/context-schema.md` before using brand, product, persona, or scenario files.
-3. Read `references/prompt-template.md` before writing any generation prompt. Write the `Visual` and `Layout` slots yourself for every prompt, and vary them across a variant set.
-4. Read `references/generation-modes.md` when a request names Clone, Iterate, reference ads, variants, or natural-language ad generation.
-5. Read `references/iteration-ladder.md` for requests that turn one winning ad into multiple concepts.
-6. Read `references/taxonomies.md` for archetype, objective, ratio, copy-framework, or creative-tag choices.
-7. Read `references/product-fidelity.md` when exact product appearance matters.
-8. Read `references/refinement-workflows.md` for reuse, vary, text edit, or inpaint requests.
-9. Use `scripts/compile_prompt.py` when the user asks for deterministic prompt JSON or reusable prompt files. Pass your authored slots with `--visual` and `--layout`; omitting them falls back to generic template wording that is not suitable for a delivered ad.
-10. Use `scripts/create_iteration_ladder.py` when the user asks to turn one winning ad into strategies and ad ideas.
-11. Use `scripts/generate_image.py` when the user asks for a dry-run image payload or API execution from compiled prompt JSON.
-12. Use `scripts/composite_product.py` when the user asks to preserve exact product appearance by placing a real product PNG onto a generated background.
+3. If the user has a rough campaign brief, use `examples/campaign-brief.md` as the shape and `scripts/scaffold_campaign.py` to create starter YAML files.
+4. Read `references/platform-presets.md` when the user names a channel, placement, or goal. Use a preset instead of asking for raw aspect ratios when possible.
+5. Read `references/prompt-template.md` before writing any generation prompt. Write the `Visual` and `Layout` slots yourself for every prompt, and vary them across a variant set.
+6. Read `references/generation-modes.md` when a request names Clone, Iterate, reference ads, variants, or natural-language ad generation.
+7. Read `references/iteration-ladder.md` for requests that turn one winning ad into multiple concepts.
+8. Read `references/taxonomies.md` for archetype, objective, ratio, copy-framework, or creative-tag choices.
+9. Read `references/product-fidelity.md` when exact product appearance matters.
+10. Read `references/refinement-workflows.md` for reuse, vary, text edit, or inpaint requests.
+11. Use `scripts/compile_prompt.py` when the user asks for deterministic prompt JSON or reusable prompt files. Prefer `--platform-preset` over asking marketers to provide ratios. Pass your authored slots with `--visual` and `--layout`; omitting them falls back to generic template wording that is not suitable for a delivered ad.
+12. Use `scripts/score_prompt.py` when the user asks for quality review, readiness checks, or recommendations before image generation. Revise prompts scoring below 75 before generating.
+13. Use `scripts/create_iteration_ladder.py` when the user asks to turn one winning ad into strategies and ad ideas.
+14. Use `scripts/generate_image.py` when the user asks for a dry-run image payload or API execution from compiled prompt JSON.
+15. Use `scripts/composite_product.py` when the user asks to preserve exact product appearance by placing a real product PNG onto a generated background.
 
 ## Output Contract
 
@@ -31,8 +34,10 @@ For prompt-generation requests, return:
 - mode
 - objective
 - ratio
+- platform preset
 - variant count
 - lineage metadata
+- quality score and revision recommendations when scoring is requested
 - next refinement options
 
 For iteration-ladder requests, return:

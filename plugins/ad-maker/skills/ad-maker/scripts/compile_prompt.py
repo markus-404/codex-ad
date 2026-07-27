@@ -12,6 +12,7 @@ RATIO_TO_SIZE = {
     "4:5": "1024x1280",
     "9:16": "1152x2048",
 }
+PRESET_PATH = Path(__file__).resolve().parents[1] / "references/platform-presets.yaml"
 
 MODES = {"brief", "clone", "iterate"}
 REFINE_MODES = {
@@ -45,6 +46,26 @@ def load_yaml(path: str) -> dict:
     if not isinstance(data, dict):
         raise ValueError(f"Expected mapping in {path}")
     return data
+
+
+def load_platform_presets() -> dict:
+    data = load_yaml(str(PRESET_PATH))
+    return data
+
+
+def apply_platform_preset(args: argparse.Namespace) -> None:
+    args.platform_preset_data = {}
+    if not args.platform_preset:
+        return
+    presets = load_platform_presets()
+    preset = presets.get(args.platform_preset)
+    if not preset:
+        raise ValueError(f"Unsupported platform preset: {args.platform_preset}")
+    args.platform_preset_data = preset
+    if not args.ratio:
+        args.ratio = preset.get("ratio")
+    if not args.objective:
+        args.objective = preset.get("objective")
 
 
 def require_args(args: argparse.Namespace, names: list) -> None:
@@ -105,14 +126,25 @@ def build_prompt(brand: dict, product: dict, persona: dict, scenario: dict, args
     colors = ", ".join(brand.get("guidelines", {}).get("colors", []))
     headline_font = font_label(brand.get("guidelines", {}).get("fonts", {}).get("headline", {}))
     body_font = font_label(brand.get("guidelines", {}).get("fonts", {}).get("body", {}))
+    preset = getattr(args, "platform_preset_data", {}) or {}
 
     visual = args.visual or (
         f"{scene} Feature {product_name} for {persona_name}, with a small value callout reading \"{args.offer}\"."
     )
-    layout = args.layout or (
-        f"Place uploaded product #1 as the central visual occupying at least 12% of the canvas; "
-        f"place headline \"{args.headline}\" at top center and offer \"{args.offer}\" in a rounded callout near the product."
-    )
+    if args.layout:
+        layout = args.layout
+    elif preset.get("layout_guidance"):
+        layout = (
+            f"{preset['layout_guidance']} Use uploaded product #1 as the product reference; "
+            f"place headline \"{args.headline}\" and offer \"{args.offer}\" in the primary reading path."
+        )
+    else:
+        layout = (
+            f"Place uploaded product #1 as the central visual occupying at least 12% of the canvas; "
+            f"place headline \"{args.headline}\" at top center and offer \"{args.offer}\" in a rounded callout near the product."
+        )
+    if preset and preset.get("creative_style"):
+        visual = f"{visual} Creative style: {preset['creative_style']}"
 
     prompt_lines = [
         f"- Visual: {visual}",
@@ -137,6 +169,7 @@ def build_prompt(brand: dict, product: dict, persona: dict, scenario: dict, args
             "objective": args.objective,
             "ratio": args.ratio,
             "size": RATIO_TO_SIZE[args.ratio],
+            "platform_preset": args.platform_preset or "",
             "variant_count": args.variant_count,
             "brand": brand_name,
             "product": product_name,
@@ -175,6 +208,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--mode", choices=sorted(MODES))
     parser.add_argument("--objective")
     parser.add_argument("--ratio")
+    parser.add_argument("--platform-preset")
     parser.add_argument("--variant-count", type=int)
     parser.add_argument("--headline")
     parser.add_argument("--subline")
@@ -195,6 +229,7 @@ def main() -> int:
             require_args(args, ["source_prompt_json", "refine_mode", "edit_instruction", "out"])
             output = refine_prompt(args)
         else:
+            apply_platform_preset(args)
             require_args(args, ["brand", "product", "persona", "scenario", "mode", "objective", "ratio", "variant_count", "headline", "subline", "offer", "out"])
             brand = load_yaml(args.brand)
             product = load_yaml(args.product)

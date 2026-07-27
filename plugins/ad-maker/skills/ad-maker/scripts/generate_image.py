@@ -17,8 +17,8 @@ RATIO_TO_SIZE = {
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate or edit images from compiled ad-maker prompt JSON.")
     parser.add_argument("--prompt-json", required=True)
-    parser.add_argument("--count", type=int, required=True)
-    parser.add_argument("--ratio", required=True)
+    parser.add_argument("--count", type=int)
+    parser.add_argument("--ratio")
     parser.add_argument("--out-dir", required=True)
     parser.add_argument("--model", default="gpt-image-2")
     parser.add_argument("--quality", default="medium")
@@ -56,15 +56,18 @@ def api_request_from_args(args: argparse.Namespace, prompt_data: dict) -> dict:
     real call. Edit requests attach `image` (and optional `mask`) as file
     uploads and do not send `quality`.
     """
-    if args.ratio not in RATIO_TO_SIZE:
-        raise ValueError(f"Unsupported ratio: {args.ratio}")
-    if not 1 <= args.count <= 10:
+    metadata = prompt_data.get("metadata", {})
+    ratio = args.ratio or metadata.get("ratio")
+    count = args.count if args.count is not None else metadata.get("variant_count")
+    if ratio not in RATIO_TO_SIZE:
+        raise ValueError(f"Unsupported ratio: {ratio}")
+    if not isinstance(count, int) or not 1 <= count <= 10:
         raise ValueError("--count must be between 1 and 10 (OpenAI Images API n range).")
     request = {
         "model": args.model,
         "prompt": effective_prompt(prompt_data),
-        "size": RATIO_TO_SIZE[args.ratio],
-        "n": args.count,
+        "size": RATIO_TO_SIZE[ratio],
+        "n": count,
     }
     if args.mode == "generate":
         request["quality"] = args.quality

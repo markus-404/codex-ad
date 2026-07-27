@@ -48,6 +48,30 @@ def test_generate_image_dry_run_prints_payload(tmp_path):
     assert "No garbled typography" in request["prompt"]
 
 
+def test_generate_image_uses_prompt_metadata_defaults(tmp_path):
+    prompt_json = tmp_path / "prompt.json"
+    prompt_json.write_text(json.dumps({
+        "prompt": "- Visual: Test scene",
+        "negative_prompt": "",
+        "image_refs": [],
+        "metadata": {"ratio": "4:5", "size": "1024x1280", "variant_count": 3},
+    }))
+    args = [
+        sys.executable,
+        str(SCRIPT),
+        "--prompt-json",
+        str(prompt_json),
+        "--out-dir",
+        str(tmp_path / "images"),
+        "--dry-run",
+    ]
+    result = subprocess.run(args, cwd=ROOT, text=True, capture_output=True)
+    assert result.returncode == 0, result.stderr
+    request = json.loads(result.stdout)["api_request"]
+    assert request["size"] == "1024x1280"
+    assert request["n"] == 3
+
+
 def test_generate_image_rejects_zero_count(tmp_path):
     prompt_json = tmp_path / "prompt.json"
     prompt_json.write_text(json.dumps({

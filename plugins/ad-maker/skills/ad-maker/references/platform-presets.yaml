@@ -1,0 +1,35 @@
+meta-feed-conversion:
+  display_name: Meta feed conversion
+  ratio: "4:5"
+  objective: Conversion
+  creative_style: Product-forward direct-response static ad with clear offer hierarchy.
+  layout_guidance: Product sits in the lower-right third occupying at least 18% of canvas; headline sits upper-left; offer badge sits within one eye movement of the product; keep copy short for feed scanning.
+  copy_density: medium
+instagram-story:
+  display_name: Instagram story
+  ratio: "9:16"
+  objective: Conversion
+  creative_style: Vertical thumb-stopping story ad with strong first-glance product recognition.
+  layout_guidance: Keep product and primary text inside the vertical safe zone; place product in the lower 45% of canvas; keep headline large in the upper third; reserve bottom space for CTA overlays.
+  copy_density: low
+square-retargeting:
+  display_name: Square retargeting
+  ratio: "1:1"
+  objective: Conversion
+  creative_style: Offer-led square retargeting ad for people who already know the product.
+  layout_guidance: Center product prominently occupying at least 22% of canvas; place offer close to the product; use direct reminder copy and minimal background detail.
+  copy_density: medium
+tiktok-static:
+  display_name: TikTok static
+  ratio: "9:16"
+  objective: Engagement
+  creative_style: Native-feeling UGC static frame with human context and product proof.
+  layout_guidance: Use a casual handheld-feeling scene; place product in the foreground or hand; keep text in short stacked overlays inside the vertical safe zone; avoid overly polished studio framing.
+  copy_density: low
+linkedin-lead-gen:
+  display_name: LinkedIn lead gen
+  ratio: "1:1"
+  objective: Leads
+  creative_style: Clean proof-led B2B static ad with restrained layout and specific value proposition.
+  layout_guidance: Use a clean square layout; put proof or value proposition in the top half; place product or interface visual in the center-right; keep CTA clear and businesslike.
+  copy_density: medium
