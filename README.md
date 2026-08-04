@@ -17,8 +17,8 @@ image *generation* in `ad-maker` calls an external API — see [Notes](#notes).
 
 ## Install
 
-Pick the section for your host. The plugin is the same everywhere; only the
-install mechanism differs.
+Every host installs from this same repo — `markus-404/codex-ad`. Nothing to
+download, clone, or zip. Pick your host below; only the mechanism differs.
 
 ### Codex
 
@@ -82,24 +82,27 @@ claude plugin update codex-ad
 
 Restart the session to apply.
 
-### claude.ai and Claude Cowork
+### claude.ai, Claude Desktop, and Cowork
 
-These hosts install **skills**, not plugins, so upload each skill folder
-separately. Zip the folder itself — not the repo, and not a parent directory:
+No download, no zip, no terminal. These hosts install the plugin straight from
+this GitHub repo, and the bundled skills come with it:
 
-```bash
-cd plugins/codex-ad/skills
-zip -r ad-brainstorm.zip ad-brainstorm
-zip -r ad-maker.zip ad-maker
-```
+1. Open **Customize** in the left sidebar
+2. Go to the **Plugins** tab
+3. Under **Personal plugins**, click **+** → **Add marketplace**
+4. Choose **Add from a repository** and enter: `markus-404/codex-ad`
+5. Install **codex-ad**
 
-Then upload each `.zip` from the Skills section of your settings.
+Start a new chat and both skills are available.
 
-`ad-brainstorm` is built to run in these sandboxes: its scripts are Python
-stdlib only, make no network calls, and take explicit file paths. `ad-maker`'s
-prompt and scoring workflow runs there too; its `composite_product.py` needs
-Pillow and its `generate_image.py` needs network access, so those two scripts
-are Codex/Claude Code only.
+There is no chat command that installs a plugin here — `/plugin` works in Claude
+Code only, so the five steps above are the whole flow.
+
+`ad-brainstorm` is built for these sandboxes: its scripts are Python stdlib
+only, make no network calls, and take explicit file paths. `ad-maker`'s prompt
+and scoring workflow runs there too; its `composite_product.py` needs Pillow and
+its `generate_image.py` needs network access, so those two scripts are
+Codex/Claude Code only.
 
 ### Upgrading from 0.1.x
 
@@ -120,6 +123,9 @@ claude plugin uninstall ad-maker@codex-ad
 claude plugin marketplace update codex-ad
 claude plugin install codex-ad@codex-ad
 ```
+
+On claude.ai, Claude Desktop, and Cowork, remove the old `ad-maker` plugin under
+**Customize → Plugins**, then install `codex-ad` from the same marketplace.
 
 Nothing in your campaign folders changes — the skill names, script names, and
 `output/` layout are all the same.
