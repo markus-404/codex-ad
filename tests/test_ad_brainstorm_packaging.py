@@ -66,6 +66,12 @@ def test_codex_and_claude_manifests_agree():
     assert codex["version"] == claude["version"]
 
 
+def test_project_version_matches_plugin_version():
+    codex = json.loads((PLUGIN / ".codex-plugin/plugin.json").read_text())
+    pyproject = (ROOT / "pyproject.toml").read_text()
+    assert 'version = "{0}"'.format(codex["version"]) in pyproject
+
+
 def test_both_skills_ship_in_the_one_plugin():
     """One install must deliver both skills - they are not separate plugins."""
     skills = {p.name for p in (PLUGIN / "skills").iterdir() if p.is_dir()}

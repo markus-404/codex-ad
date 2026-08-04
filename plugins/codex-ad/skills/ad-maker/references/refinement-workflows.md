@@ -25,3 +25,21 @@ Replace only requested copy strings. Preserve brand, product, visual direction, 
 ## Inpaint
 
 Create an edit prompt scoped to the masked region. Preserve unmasked image areas.
+
+## Post-Generation QA
+
+After image generation, inspect the selected outputs before approval or bulk reuse. Record pass/fail notes by image and create one refinement instruction per failed item.
+
+QA categories:
+
+- Packaging fidelity: product shape, label geometry, cap shape, package proportions, color, and visible material match the supplied product reference.
+- Mobile text readability: every rendered text string is short, legible, spelled correctly, and readable at marketplace thumbnail size.
+- Platform layout consistency: ratio, safe zones, product scale, logo placement, and gallery rhythm match the chosen platform or Shopee gallery system.
+- Claim risk: copy avoids unsupported cure, miracle, guaranteed-result, medical, or exaggerated claims.
+- Brand tone: image, copy, typography, color, and offer framing match the supplied brand context.
+
+Refinement instruction format:
+
+```text
+Refine image [slot/file]: fix [specific failed QA item]. Preserve [product/logo/background areas that passed]. Keep copy exactly "[approved text]" unless the failed item is text readability.
+```

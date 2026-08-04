@@ -1,7 +1,8 @@
 # Scoring Rubric
 
 Score prompt JSON before image generation when the user asks for a quality
-check, a recommendation, or multiple concepts.
+check, a recommendation, or multiple concepts. For production, gallery,
+Shopee, or multi-prompt SKU batches, scoring is mandatory before generation.
 
 Each category is scored from 0 to 10:
 

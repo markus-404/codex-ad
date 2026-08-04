@@ -5,7 +5,7 @@
 | Skill | What it does | Start it with |
 | --- | --- | --- |
 | **`ad-brainstorm`** | Turns one product URL into 100 ad concepts across a 10 format x 10 angle grid, grounded in a shot-by-shot analysis of the product's real photography. | `Run ad-brainstorm on <product URL>` |
-| **`ad-maker`** | Turns marketing context into structured static ad prompts, ordered reference image lists, platform-aware layouts, variants, iteration ladders, and quality scorecards. | `Use ad-maker to ...` |
+| **`ad-maker`** | Turns marketing context into structured static ad prompts, SKU gallery prompt libraries, ordered reference image lists, platform-aware layouts, variants, iteration ladders, readiness scorecards, and post-generation QA refinements. | `Use ad-maker to ...` |
 
 `ad-brainstorm` produces the concepts; `ad-maker` turns a chosen concept into a
 production prompt. One install delivers both, and each works on its own.
@@ -40,7 +40,7 @@ Verify, then start a new chat (or restart Codex Desktop) so both skills load:
 codex plugin list
 ```
 
-You should see `codex-ad@codex-ad  installed, enabled  0.2.0`.
+You should see `codex-ad@codex-ad  installed, enabled  0.2.1`.
 
 To pull a newer release later:
 
@@ -228,7 +228,7 @@ prompt. Both skills ship together, so this needs no extra install.
 
 ## Skill 2 — `ad-maker`
 
-Marketing context in, production-ready static ad prompts out.
+Marketing context in, production-ready static ad prompts and SKU galleries out.
 
 ### Trigger it
 
@@ -295,6 +295,13 @@ Quality-check before image generation:
 ```text
 Use $ad-maker to score this prompt JSON and revise anything below 75 before
 generating images.
+```
+
+Create a SKU gallery prompt library:
+
+```text
+Use $ad-maker to create a 4-6 image Shopee gallery prompt library for this SKU.
+Score every prompt before generation and write post-generation QA refinements.
 ```
 
 ### Platform presets

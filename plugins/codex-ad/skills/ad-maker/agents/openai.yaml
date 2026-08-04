@@ -1,4 +1,4 @@
 interface:
   display_name: "ad_maker"
   short_description: "Marketing-ready static ad prompts"
-  default_prompt: "Use $ad-maker to turn a rough campaign brief into platform-aware static ad prompts, reference image lists, and a deterministic quality scorecard."
+  default_prompt: "Use $ad-maker to turn a rough campaign brief into platform-aware static ad prompts, SKU gallery prompt libraries, readiness scorecards, and post-generation QA refinements."

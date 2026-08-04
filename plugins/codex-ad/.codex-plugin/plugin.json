@@ -1,7 +1,7 @@
 {
   "name": "codex-ad",
-  "version": "0.2.0",
-  "description": "Ad creative toolkit: brainstorm 100 concepts from one product URL, then turn a chosen concept into a production-ready static ad prompt.",
+  "version": "0.2.1",
+  "description": "Ad creative toolkit: brainstorm 100 concepts from one product URL, then turn a chosen concept into production-ready static ad prompts and SKU galleries.",
   "author": {
     "name": "markus-404"
   },
@@ -18,7 +18,7 @@
   "interface": {
     "displayName": "codex_ad",
     "shortDescription": "Ad concepts and static ad prompts",
-    "longDescription": "Two skills. ad-brainstorm scrapes a single product page, analyzes its real product photography shot by shot, builds an audience map, then generates 100 ad concepts across a 10 format x 10 angle grid, with deterministic validators enforcing grid coverage, unique hooks, and image grounding. ad-maker turns marketing context into platform-aware six-slot static ad prompts, reference image lists, variants, iteration ladders, and deterministic quality scorecards.",
+    "longDescription": "Two skills. ad-brainstorm scrapes a single product page, analyzes its real product photography shot by shot, builds an audience map, then generates 100 ad concepts across a 10 format x 10 angle grid, with deterministic validators enforcing grid coverage, unique hooks, and image grounding. ad-maker turns marketing context into platform-aware six-slot static ad prompts, SKU gallery prompt libraries, reference image lists, variants, iteration ladders, deterministic readiness scorecards, and post-generation QA refinement instructions.",
     "developerName": "markus-404",
     "category": "Productivity",
     "capabilities": [
@@ -28,7 +28,7 @@
     "defaultPrompt": [
       "Run ad-brainstorm on https://example.com/products/my-product",
       "Create a Meta feed conversion ad from this product brief.",
-      "Score this ad prompt and revise anything below 75."
+      "Create a 4-6 image Shopee gallery prompt library for this SKU."
     ],
     "brandColor": "#337AB7"
   }
