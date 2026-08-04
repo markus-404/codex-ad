@@ -5,8 +5,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / "plugins/ad-maker/skills/ad-maker/scripts/create_iteration_ladder.py"
-EXAMPLES = ROOT / "plugins/ad-maker/skills/ad-maker/references/examples"
+SCRIPT = ROOT / "plugins/codex-ad/skills/ad-maker/scripts/create_iteration_ladder.py"
+EXAMPLES = ROOT / "plugins/codex-ad/skills/ad-maker/references/examples"
 
 
 def test_iteration_ladder_has_three_strategies_and_twelve_ideas(tmp_path):

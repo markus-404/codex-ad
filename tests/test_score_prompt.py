@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCORE = ROOT / "plugins/ad-maker/skills/ad-maker/scripts/score_prompt.py"
+SCORE = ROOT / "plugins/codex-ad/skills/ad-maker/scripts/score_prompt.py"
 
 
 def write_prompt(tmp_path, prompt, negative_prompt="", image_refs=None, metadata=None):

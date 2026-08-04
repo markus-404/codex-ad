@@ -1,0 +1,19 @@
+{
+  "name": "codex-ad",
+  "description": "Ad creative toolkit: brainstorm 100 concepts from one product URL, then turn a chosen concept into a production-ready static ad prompt.",
+  "version": "0.2.0",
+  "author": {
+    "name": "markus-404"
+  },
+  "homepage": "https://github.com/markus-404/codex-ad",
+  "repository": "https://github.com/markus-404/codex-ad",
+  "license": "MIT",
+  "keywords": [
+    "ads",
+    "concepts",
+    "brainstorm",
+    "image-generation",
+    "creative",
+    "prompts"
+  ]
+}

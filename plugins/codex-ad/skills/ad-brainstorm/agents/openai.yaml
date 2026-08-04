@@ -1,0 +1,4 @@
+interface:
+  display_name: "ad_brainstorm"
+  short_description: "One product URL to 100 validated ad concepts"
+  default_prompt: "Use $ad-brainstorm to turn a single product page URL into a validated 10x10 grid of ad concepts grounded in the product's real photography."

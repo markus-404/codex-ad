@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / "plugins/ad-maker/skills/ad-maker/scripts/generate_image.py"
+SCRIPT = ROOT / "plugins/codex-ad/skills/ad-maker/scripts/generate_image.py"
 
 
 def test_generate_image_dry_run_prints_payload(tmp_path):

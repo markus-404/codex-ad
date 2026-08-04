@@ -7,9 +7,9 @@ import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
-COMPILE = ROOT / "plugins/ad-maker/skills/ad-maker/scripts/compile_prompt.py"
-PRESETS = ROOT / "plugins/ad-maker/skills/ad-maker/references/platform-presets.yaml"
-EXAMPLES = ROOT / "plugins/ad-maker/skills/ad-maker/references/examples"
+COMPILE = ROOT / "plugins/codex-ad/skills/ad-maker/scripts/compile_prompt.py"
+PRESETS = ROOT / "plugins/codex-ad/skills/ad-maker/references/platform-presets.yaml"
+EXAMPLES = ROOT / "plugins/codex-ad/skills/ad-maker/references/examples"
 
 
 def base_compile_args(tmp_path):

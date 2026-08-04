@@ -5,10 +5,10 @@
   },
   "plugins": [
     {
-      "name": "ad-maker",
+      "name": "codex-ad",
       "source": {
         "source": "local",
-        "path": "./plugins/ad-maker"
+        "path": "./plugins/codex-ad"
       },
       "policy": {
         "installation": "AVAILABLE",

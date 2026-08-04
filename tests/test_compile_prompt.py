@@ -5,8 +5,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / "plugins/ad-maker/skills/ad-maker/scripts/compile_prompt.py"
-EXAMPLES = ROOT / "plugins/ad-maker/skills/ad-maker/references/examples"
+SCRIPT = ROOT / "plugins/codex-ad/skills/ad-maker/scripts/compile_prompt.py"
+EXAMPLES = ROOT / "plugins/codex-ad/skills/ad-maker/references/examples"
 
 
 def run_compile(tmp_path, extra_args=None):

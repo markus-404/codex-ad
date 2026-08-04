@@ -6,7 +6,7 @@ from PIL import Image
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / "plugins/ad-maker/skills/ad-maker/scripts/composite_product.py"
+SCRIPT = ROOT / "plugins/codex-ad/skills/ad-maker/scripts/composite_product.py"
 
 
 def test_composite_product_writes_valid_image(tmp_path):

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "codex-ad",
+  "description": "Ad creative plugin: concept brainstorming from a product URL, and structured static ad prompt generation.",
+  "owner": {
+    "name": "markus-404"
+  },
+  "plugins": [
+    {
+      "name": "codex-ad",
+      "description": "Two skills: ad-brainstorm turns one product URL into a validated 10x10 grid of ad concepts grounded in the product's real photography; ad-maker turns a concept or brief into six-slot static ad prompts with deterministic quality scorecards.",
+      "source": "./plugins/codex-ad",
+      "category": "productivity",
+      "homepage": "https://github.com/markus-404/codex-ad/tree/main/plugins/codex-ad"
+    }
+  ]
+}

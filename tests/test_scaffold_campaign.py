@@ -6,7 +6,7 @@ import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / "plugins/ad-maker/skills/ad-maker/scripts/scaffold_campaign.py"
+SCRIPT = ROOT / "plugins/codex-ad/skills/ad-maker/scripts/scaffold_campaign.py"
 BRIEF = ROOT / "examples/campaign-brief.md"
 
 

@@ -1,35 +1,236 @@
 # codex-ad
 
-`codex-ad` is a Codex plugin marketplace containing the `ad-maker` plugin.
-The plugin bundles an `ad-maker` skill for turning normal marketing context into
-structured static ad prompts, image reference lists, platform-aware layouts,
-iteration ladders, and deterministic quality scorecards.
+`codex-ad` is one plugin containing two ad-creative skills.
+
+| Skill | What it does | Start it with |
+| --- | --- | --- |
+| **`ad-brainstorm`** | Turns one product URL into 100 ad concepts across a 10 format x 10 angle grid, grounded in a shot-by-shot analysis of the product's real photography. | `Run ad-brainstorm on <product URL>` |
+| **`ad-maker`** | Turns marketing context into structured static ad prompts, ordered reference image lists, platform-aware layouts, variants, iteration ladders, and quality scorecards. | `Use ad-maker to ...` |
+
+`ad-brainstorm` produces the concepts; `ad-maker` turns a chosen concept into a
+production prompt. One install delivers both, and each works on its own.
+
+Neither skill needs an API key to run its analysis or validation. Only actual
+image *generation* in `ad-maker` calls an external API — see [Notes](#notes).
+
+---
 
 ## Install
 
-From a public GitHub repo:
+Pick the section for your host. The plugin is the same everywhere; only the
+install mechanism differs.
+
+### Codex
 
 ```bash
 codex plugin marketplace add markus-404/codex-ad
-codex plugin add ad-maker@codex-ad
+codex plugin add codex-ad@codex-ad
 ```
 
-From a local checkout:
+From a local checkout instead of GitHub:
 
 ```bash
 codex plugin marketplace add .
-codex plugin add ad-maker@codex-ad
+codex plugin add codex-ad@codex-ad
 ```
 
-Restart Codex Desktop or start a new chat after installation so the bundled
-skill is available.
+Verify, then start a new chat (or restart Codex Desktop) so both skills load:
 
-## Use
+```bash
+codex plugin list
+```
 
-Open Codex in any campaign or work folder. A marketer can start with plain text:
+You should see `codex-ad@codex-ad  installed, enabled  0.2.0`.
+
+To pull a newer release later:
+
+```bash
+codex plugin marketplace upgrade codex-ad
+codex plugin add codex-ad@codex-ad
+```
+
+### Claude Code
+
+Works from the shell:
+
+```bash
+claude plugin marketplace add markus-404/codex-ad
+claude plugin install codex-ad@codex-ad
+```
+
+…or from inside a session:
 
 ```text
-Use $ad-maker to make a nice enough Meta feed ad for this product.
+/plugin marketplace add markus-404/codex-ad
+/plugin install codex-ad@codex-ad
+```
+
+Confirm both skills registered:
+
+```bash
+claude plugin details codex-ad
+```
+
+Expected: `Skills (2)  ad-brainstorm, ad-maker`.
+
+To pull a newer release later:
+
+```bash
+claude plugin marketplace update codex-ad
+claude plugin update codex-ad
+```
+
+Restart the session to apply.
+
+### claude.ai and Claude Cowork
+
+These hosts install **skills**, not plugins, so upload each skill folder
+separately. Zip the folder itself — not the repo, and not a parent directory:
+
+```bash
+cd plugins/codex-ad/skills
+zip -r ad-brainstorm.zip ad-brainstorm
+zip -r ad-maker.zip ad-maker
+```
+
+Then upload each `.zip` from the Skills section of your settings.
+
+`ad-brainstorm` is built to run in these sandboxes: its scripts are Python
+stdlib only, make no network calls, and take explicit file paths. `ad-maker`'s
+prompt and scoring workflow runs there too; its `composite_product.py` needs
+Pillow and its `generate_image.py` needs network access, so those two scripts
+are Codex/Claude Code only.
+
+### Upgrading from 0.1.x
+
+Releases before 0.2.0 shipped `ad-maker` as its own plugin. 0.2.0 merges it with
+`ad-brainstorm` into one `codex-ad` plugin, so the old plugin name no longer
+resolves. Remove the old install first:
+
+```bash
+# Codex
+codex plugin remove ad-maker@codex-ad
+codex plugin marketplace upgrade codex-ad
+codex plugin add codex-ad@codex-ad
+```
+
+```bash
+# Claude Code
+claude plugin uninstall ad-maker@codex-ad
+claude plugin marketplace update codex-ad
+claude plugin install codex-ad@codex-ad
+```
+
+Nothing in your campaign folders changes — the skill names, script names, and
+`output/` layout are all the same.
+
+---
+
+## Skill 1 — `ad-brainstorm`
+
+One product page in, 100 validated ad concepts out.
+
+### Trigger it
+
+```text
+Run ad-brainstorm on https://lumora.co/products/vitamin-c-serum
+```
+
+It also fires on: *"100 concepts from this URL"*, *"concept grid"*, *"concept
+matrix"*, or simply pasting a single product URL and asking for ad concepts. In
+Codex you can name it explicitly with `$ad-brainstorm`.
+
+It needs a **single product page URL**. Homepages, category pages, and
+collection pages are refused on purpose — the grid is built for one product at a
+time.
+
+Optional modifiers, appended to the same message:
+
+| Modifier | Effect |
+| --- | --- |
+| `Focus on [Meta / TikTok / YouTube]` | Bias the platform recommendations |
+| `Target [audience]` | Override the ICP inferred from the page |
+| `Skip formats [X, Y]` | Drop archetypes; the expected cell count shrinks with the grid |
+| `Generate in [language]` | Localize hooks and summaries; JSON keys stay English |
+
+### What it does
+
+Scrapes the page, looks at up to 5 product photos **shot by shot**, writes an
+audience map, then generates one concept per cell of a 10 format x 10 angle
+grid. Image analysis uses the host model's own vision — no external vision API,
+no key to configure.
+
+Output lands in your working directory:
+
+```
+output/[slug]/concepts.json     # source of truth
+output/[slug]/concepts.md       # rendered, grouped by format
+output/[slug]/audience-map.md
+output/[slug]/analysis.json
+output/[slug]/scraped.json
+output/[slug]/images/
+```
+
+### The two quality gates
+
+Both run automatically. You only need these commands to re-check work by hand.
+
+The **analysis gate** enforces per-image detail, a valid color palette, a 4-6
+item gap list, exactly 5 suggested visual styles, and consistency between "no
+humans shown" and a flagged UGC gap. It also rejects an analysis where every
+photo got an identical read — the tell that the images were never looked at
+individually:
+
+```bash
+python3 plugins/codex-ad/skills/ad-brainstorm/scripts/validate_analysis.py \
+  --analysis output/vitamin-c-serum/analysis.json
+```
+
+The **concept gate** enforces full grid coverage, IDs that match their cell,
+unique hooks under 15 words, exactly 2 summary lines, and — the important one —
+that every concept's `visual_grounding` resolves to a real path inside
+`analysis.json`. No concept can claim image grounding it does not have:
+
+```bash
+python3 plugins/codex-ad/skills/ad-brainstorm/scripts/validate_concepts.py \
+  --concepts output/vitamin-c-serum/concepts.json \
+  --analysis output/vitamin-c-serum/analysis.json
+```
+
+Each gate returns a 0-100 score with a component breakdown and blocks below
+`--min-score` (default 75). Reading the components:
+
+- low `grounding_coverage` — the image layer was decorative, not load-bearing
+- low `visual_variety` — one treatment got recycled across cells
+- low `hook_distinctness` — the format and angle axes collapsed into each other
+
+`concepts.json` is the source of truth; `concepts.md` is rendered from it and
+should never be hand-edited:
+
+```bash
+python3 plugins/codex-ad/skills/ad-brainstorm/scripts/render_concepts.py \
+  --concepts output/vitamin-c-serum/concepts.json \
+  --out output/vitamin-c-serum/concepts.md
+```
+
+### Chain into `ad-maker`
+
+Hand a concept's `hook` and `visual_style` to `ad-maker` to compile a real
+prompt. Both skills ship together, so this needs no extra install.
+
+---
+
+## Skill 2 — `ad-maker`
+
+Marketing context in, production-ready static ad prompts out.
+
+### Trigger it
+
+Open your host in any campaign folder and write plain text. In Codex, `$ad-maker`
+names the skill explicitly:
+
+```text
+Use $ad-maker to make a Meta feed ad for this product.
 
 Brand:
 Sample Foods
@@ -48,8 +249,10 @@ Assets:
 - product: ./assets/product.png
 ```
 
-The skill will choose a preset, produce a structured prompt, preserve the logo
-and product reference order, and suggest the next refinement options.
+It picks a preset, produces a structured prompt, preserves logo and product
+reference order, and suggests refinements. It also activates on any request to
+generate or prepare static ad images, variants, iteration ladders, or refinement
+prompts.
 
 ### Quickstarts by use case
 
@@ -88,20 +291,31 @@ Use $ad-maker to score this prompt JSON and revise anything below 75 before
 generating images.
 ```
 
+### Platform presets
+
+- `meta-feed-conversion`
+- `instagram-story`
+- `square-retargeting`
+- `tiktok-static`
+- `linkedin-lead-gen`
+
 ### Deterministic helper scripts
 
-For repeatable campaign setup:
+The skill runs these for you; the paths below are for running them by hand from
+a checkout of this repo.
+
+Repeatable campaign setup:
 
 ```bash
-python3 plugins/ad-maker/skills/ad-maker/scripts/scaffold_campaign.py \
+python3 plugins/codex-ad/skills/ad-maker/scripts/scaffold_campaign.py \
   --brief examples/campaign-brief.md \
   --out-dir campaigns/sample-foods
 ```
 
-For preset-aware prompt JSON:
+Preset-aware prompt JSON:
 
 ```bash
-python3 plugins/ad-maker/skills/ad-maker/scripts/compile_prompt.py \
+python3 plugins/codex-ad/skills/ad-maker/scripts/compile_prompt.py \
   --brand campaigns/sample-foods/brand.yaml \
   --product campaigns/sample-foods/product.yaml \
   --persona campaigns/sample-foods/persona.yaml \
@@ -116,46 +330,41 @@ python3 plugins/ad-maker/skills/ad-maker/scripts/compile_prompt.py \
   --out campaigns/sample-foods/prompt.json
 ```
 
-For deterministic quality scoring:
+Deterministic quality scoring:
 
 ```bash
-python3 plugins/ad-maker/skills/ad-maker/scripts/score_prompt.py \
+python3 plugins/codex-ad/skills/ad-maker/scripts/score_prompt.py \
   --prompt-json campaigns/sample-foods/prompt.json
 ```
 
-For a dry-run image request payload:
+Dry-run image request payload:
 
 ```bash
-python3 plugins/ad-maker/skills/ad-maker/scripts/generate_image.py \
+python3 plugins/codex-ad/skills/ad-maker/scripts/generate_image.py \
   --prompt-json campaigns/sample-foods/prompt.json \
   --out-dir campaigns/sample-foods/images \
   --dry-run
 ```
 
-Available platform presets:
+---
 
-- `meta-feed-conversion`
-- `instagram-story`
-- `square-retargeting`
-- `tiktok-static`
-- `linkedin-lead-gen`
-
-## Validate
+## Develop and validate
 
 ```bash
 python3 -c 'import sys, importlib; pytest=importlib.import_module("pytest"); sys.exit(pytest.main(["-q"]))'
-python3 "$HOME/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py" plugins/ad-maker
+python3 "$HOME/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py" plugins/codex-ad
+claude plugin validate .
+claude plugin validate plugins/codex-ad
 ```
 
-If your skill validator lives elsewhere, locate it with:
-
-```bash
-find "$HOME/.codex" -path "*/skill-creator/scripts/quick_validate.py" -print -quit
-```
+Two marketplace manifests must stay in sync — `.claude-plugin/marketplace.json`
+for Claude Code and `.agents/plugins/marketplace.json` for Codex. The test suite
+enforces that they agree and that both resolve to real plugin directories.
 
 ## Notes
 
-- Real image generation requires `OPENAI_API_KEY`.
-- Dry-run mode does not call the OpenAI API.
+- `ad-brainstorm` needs no API key at any step.
+- Real image generation in `ad-maker` requires `OPENAI_API_KEY`; dry-run mode
+  does not call the API.
 - Product compositing uses Pillow and should only be run on image files from
   trusted campaign folders.
