@@ -1,20 +1,21 @@
 # Scrape Routes
 
-The skill runs in four host environments with different capabilities. Route A is
-host-native and works everywhere. Routes B and C need a shell and are strictly
-faster/richer fallbacks, not requirements.
+The skill supports ChatGPT, ChatGPT Work, Codex, and Claude hosts through the
+tools actually available in the session. Browser access, Python execution,
+Python networking, vision, and shell access are separate capabilities.
 
-| Host | Native fetch | Native vision | Shell + network | Python |
-|---|---|---|---|---|
-| Claude Code | yes (WebFetch) | yes (Read on image files) | yes | yes |
-| Codex CLI | yes | yes (image input) | yes | yes |
-| Claude.ai | yes | yes (attached/fetched images) | no outbound network | sandboxed |
-| Cowork | yes | yes | varies | yes |
+| Available capability | Route |
+|---|---|
+| Native page fetching/browsing | Route A |
+| Shell with outbound network | Routes B/C if needed |
+| No usable page fetch | Ask for product details and original images tied to the URL |
+| Image attachments or remote/local image viewer | Inspect actual images |
+| Python execution but no terminal | Run validators using host-runtime.md |
 
 Confirm shell + outbound network before using Route B or C. If either is missing,
-Route A alone is sufficient — do not report failure because curl was unavailable.
+use Route A if available — do not report failure just because curl was unavailable.
 
-## Route A — host-native fetch (default, all hosts)
+## Route A — host-native fetch (when available)
 
 Use the host's own page-fetching capability against the product URL and extract:
 
@@ -29,9 +30,11 @@ Use the host's own page-fetching capability against the product URL and extract:
 - CTA text on the page
 - Every product image URL visible in the markup
 
-Native fetch returns processed text and is reliable for the copy layer. Image URLs
-come back inconsistently — if fewer than 3 usable image URLs surface, escalate to
-Route B or C, or ask the user to paste image URLs.
+Inspect what the fetch actually returns; search snippets alone are not the
+product page. Record only visible facts, and mark unavailable prices/reviews as
+unavailable rather than inventing them. Image URLs can be missing — if fewer
+than 3 usable image URLs surface, use available Routes B/C or ask for original
+image attachments. A pasted URL helps only if the host can fetch and view it.
 
 ## Route B — Shopify product JSON (shell, best quality)
 
@@ -65,7 +68,7 @@ on thin prose rather than let it through.
 
 The analysis step requires actually seeing the photos. In order of preference:
 
-1. **Download, then read** (Claude Code, Codex, Cowork with shell):
+1. **Download, then view** (any host with file-fetch and image-viewing tools):
    ```bash
    mkdir -p output/SLUG/images
    curl -s -L -o output/SLUG/images/img-1.jpg "IMAGE_URL_1"
@@ -77,14 +80,17 @@ The analysis step requires actually seeing the photos. In order of preference:
 2. **Fetch the image URL directly** if the host can view a remote image without a
    local copy.
 
-3. **Ask the user to paste the images** into the conversation.
+3. **Use original image attachments** supplied in the conversation. Keep their
+   source/attachment identifiers in the analysis; do not fabricate local paths.
 
 ## Total scrape failure
 
 If Route A returns nothing and B/C are unavailable or blocked (JS-rendered SPA,
 Cloudflare, bot detection), stop and ask:
 
-> This page is JS-rendered and I can't extract content. Please paste: title, price,
-> top 5 benefits, and the product images (or their URLs).
+> I couldn't retrieve the product details in this session. Please supply the
+> title, price, top benefits, and original product images for this URL.
 
-Do not proceed on empty data.
+Describe an observed error when available; do not diagnose JavaScript rendering
+without evidence. Identify supplied inputs as user-provided. Do not proceed on
+empty data.

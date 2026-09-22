@@ -1,7 +1,7 @@
 {
   "name": "codex-ad",
-  "version": "0.2.2",
-  "description": "Ad creative toolkit: brainstorm 100 concepts from one product URL, then turn a chosen concept into production-ready static ad prompts and SKU galleries.",
+  "version": "0.3.0",
+  "description": "Ad creative skills for ChatGPT, ChatGPT Work, Codex, and Claude: product-grounded concepts, static ad generation, and format-guided creative workflows.",
   "author": {
     "name": "markus-404"
   },
@@ -17,8 +17,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "codex_ad",
-    "shortDescription": "Ad concepts and static ad prompts",
-    "longDescription": "Three skills. ad-brainstorm scrapes a single product page, analyzes its real product photography shot by shot, builds an audience map, then generates 100 ad concepts across a 10 format x 10 angle grid, with deterministic validators enforcing grid coverage, unique hooks, and image grounding. ad-maker turns marketing context into platform-aware six-slot static ad prompts, SKU gallery prompt libraries, reference image lists, variants, iteration ladders, deterministic readiness scorecards, and post-generation QA refinement instructions. ad-maker2 is an explicitly invoked experimental alternative using pinned visual-format guides, optional brainstorming from researched briefs, and static generation.",
+    "shortDescription": "Ad concepts, images, and visual format guides",
+    "longDescription": "Three skills. ad-brainstorm scrapes a single product page, analyzes its real product photography shot by shot, builds an audience map, then generates 100 ad concepts across a 10 format x 10 angle grid, with deterministic validators enforcing grid coverage, unique hooks, and image grounding. ad-maker turns marketing context into platform-aware six-slot static ad prompts, SKU gallery prompt libraries, reference image lists, variants, iteration ladders, deterministic readiness scorecards, and post-generation QA refinement instructions. ad-maker2 is an explicitly invoked experimental alternative using pinned visual-format guides, optional brainstorming from researched briefs, and static generation. Supports ChatGPT and ChatGPT Work through available native browsing, vision, image generation, Python execution, and downloadable artifacts; required validation gates remain enforced.",
     "developerName": "markus-404",
     "category": "Productivity",
     "capabilities": [

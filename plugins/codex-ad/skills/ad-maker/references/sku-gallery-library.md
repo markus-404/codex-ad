@@ -43,6 +43,8 @@ Compile each record into prompt JSON with `scripts/compile_prompt.py`, then scor
 
 If a prompt scores below 75, revise the prompt record first. Do not compensate by asking the generator to "make it better" in broad language.
 
+In ChatGPT/Work, run these same helpers through available Python execution as described in [generation runtime](generation-runtime.md). No terminal is required, but actual script files, presets, and dependencies are. If unavailable, return the prepared records as unvalidated drafts and stop before generation; do not invent readiness scores.
+
 ## Shopee Gallery Rules
 
 - Keep every text string short enough to read on mobile.

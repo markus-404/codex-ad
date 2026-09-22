@@ -1,7 +1,7 @@
 {
   "name": "codex-ad",
-  "description": "Ad creative toolkit: brainstorm 100 concepts from one product URL, then turn a chosen concept into production-ready static ad prompts and SKU galleries.",
-  "version": "0.2.2",
+  "description": "Ad creative skills for ChatGPT, ChatGPT Work, Codex, and Claude: product-grounded concepts, static ad generation, and format-guided creative workflows.",
+  "version": "0.3.0",
   "author": {
     "name": "markus-404"
   },

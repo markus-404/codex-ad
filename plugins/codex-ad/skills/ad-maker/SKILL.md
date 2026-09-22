@@ -1,17 +1,23 @@
 ---
 name: ad-maker
-description: Use when Codex needs to generate or prepare structured static ad images — six-slot prompts, negative prompts, ordered image reference lists, variants, iteration ladders, product compositing instructions, or refinement prompts — from brand, product, persona, scenario, natural-language, or reference-ad inputs.
+description: Use when the user requests static ad images or prompts, variants, SKU galleries, product compositing, or refinements from a brief, product assets, or reference ad in ChatGPT, ChatGPT Work, Codex, or Claude.
 ---
 
 # ad-maker
 
 Use this skill to prepare structured static ad image generation work. Stay inside static ad image generation unless the user explicitly asks for a separate implementation outside this skill.
 
+## Host capabilities and files
+
+Read [generation runtime](references/generation-runtime.md) first. Use available host tools rather than assuming a terminal, API credentials, local paths, or a particular image model. In ChatGPT and ChatGPT Work, accept the brief and approved product/logo images as attachments; use the native image tool when available for image requests. Prompt-only requests do not trigger generation.
+
+Read supporting files through the host's skill-resource mechanism or the actual installed directory. Resolve exact resource identifiers from the host; never treat a `skill://` URI as a filesystem path. Use paths below relative to this skill for filesystem installs. Stage actual packaged files only when a Python helper requires them. Deliver created files through the host's download/artifact mechanism; local filesystem paths alone are not a ChatGPT handoff.
+
 ## Workflow
 
 1. Identify the generation mode: Clone, Iterate, or natural-language brief.
 2. Read `references/context-schema.md` before using brand, product, persona, or scenario files.
-3. If the user has a rough campaign brief, use `examples/campaign-brief.md` as the shape and `scripts/scaffold_campaign.py` to create starter YAML files.
+3. Accept a clear natural-language brief directly. If reusable campaign files are requested, use [campaign brief](examples/campaign-brief.md) as the shape and `scripts/scaffold_campaign.py` to create starter YAML files. Do not require teammates to write YAML for ordinary image requests.
 4. Read `references/platform-presets.md` when the user names a channel, placement, or goal. Use a preset instead of asking for raw aspect ratios when possible.
 5. Read `references/prompt-template.md` before writing any generation prompt. Write the `Visual` and `Layout` slots yourself for every prompt, and vary them across a variant set.
 6. Read `references/generation-modes.md` when a request names Clone, Iterate, reference ads, variants, or natural-language ad generation.
@@ -23,10 +29,12 @@ Use this skill to prepare structured static ad image generation work. Stay insid
 12. Use `scripts/compile_prompt.py` when the user asks for deterministic prompt JSON or reusable prompt files. Prefer `--platform-preset` over asking marketers to provide ratios. Pass your authored slots with `--visual` and `--layout`; omitting them falls back to generic template wording that is not suitable for a delivered ad.
 13. Use `scripts/score_prompt.py` when the user asks for quality review, readiness checks, or recommendations before image generation. For production, gallery, Shopee, or multi-prompt SKU batches, scoring is a normal gate: score every compiled prompt JSON and revise anything below 75 before generating or handing off.
 14. Use `scripts/create_iteration_ladder.py` when the user asks to turn one winning ad into strategies and ad ideas.
-15. Use `scripts/generate_image.py` when the user asks for a dry-run image payload or API execution from compiled prompt JSON.
+15. For image requests, follow [generation runtime](references/generation-runtime.md) and return actual generated images when the needed tools and inputs are available. Use `scripts/generate_image.py` for explicit dry-run/API requests or an available configured local API workflow; native image generation does not require an API key. Required scoring gates still apply on every route.
 16. Use `scripts/composite_product.py` when the user asks to preserve exact product appearance by placing a real product PNG onto a generated background.
 
 ## Output Contract
+
+For image-generation requests, return the generated images with a short account of the actual route, reference assets used, requested versus supported settings, and visual QA results. Also retain the prompt records below as reusable files or concise accompanying content. If generation or a required gate is blocked, name that blocker and label any preparatory output as a draft, not a completed image.
 
 For prompt-generation requests, return:
 - prompt

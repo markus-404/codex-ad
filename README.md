@@ -11,15 +11,85 @@
 `ad-brainstorm` produces the concepts; `ad-maker` turns a chosen concept into a
 production prompt. One install delivers all three. The existing ad-brainstorm → ad-maker handoff is unchanged; ad-maker2 is selected explicitly and reuses the bundled ad-maker generation helpers.
 
-The skills need no API key for analysis or validation. Actual
-image *generation* in `ad-maker` and `ad-maker2` calls an external API — see [Notes](#notes).
+No API key is needed for analysis, validation, or native image generation.
+`ad-maker` and `ad-maker2` use an available host image generator; the optional
+Python API route requires configured API credentials. See [Notes](#notes).
 
 ---
 
 ## Install
 
-Every host installs from this same repo — `markus-404/codex-ad`. Nothing to
-download, clone, or zip. Pick your host below; only the mechanism differs.
+All hosts use this repository: `markus-404/codex-ad`. For teammates in one
+ChatGPT workspace, an admin imports the GitHub marketplace once. Available
+tools and workspace policies determine which workflows can run.
+
+### ChatGPT and ChatGPT Work — shared workspace
+
+A workspace admin can import the existing skills-only plugin directly from
+GitHub. No MCP server, developer-mode connection, or teammate API key is needed
+for the native workflow.
+
+1. Open **Admin → Plugins → Add → Import marketplace**.
+2. Set **Source** to `https://github.com/markus-404/codex-ad`.
+3. Leave **Path** empty: the marketplace is at the repository root. Do not enter
+   `.agents/plugins/marketplace.json` or the plugin subdirectory here.
+4. Set **Branch, tag, or commit** to `main` for updates, or an approved commit to
+   pin a release. Authorize a GitHub account with read access when prompted.
+5. Review **Import results**, open `codex-ad`, and set the installation policy
+   to **Available** or **Installed** for the intended workspace roles.
+6. Teammates select that workspace, install the plugin from **Plugins** if it
+   is only Available, and start a new chat with it enabled.
+
+Repository installation/authentication policies do not set workspace role
+policies. Admins configure those in ChatGPT. To update after a repository push,
+open **Admin → Plugins → Marketplaces**, select the imported marketplace, and
+choose **Sync now** (automatic daily sync is also supported). A pinned commit
+stays pinned. This workspace import does not publish a public directory listing.
+
+These steps follow the official [workspace plugin management documentation](https://learn.chatgpt.com/docs/enterprise/plugin-management).
+
+Use **Work** for the complete research/100-concept workflow, galleries, and
+multi-file deliverables. Chat can handle supported image/prompt requests with
+the tools exposed in that session. Type `@` and select the installed plugin or
+skill from the picker; naming the skill explicitly in the request also makes
+intent clear. Codex's `$skill-name` notation is used in the CLI examples below.
+
+Teammate starter requests:
+
+```text
+Use ad-brainstorm on https://example.com/products/my-product.
+Return the validated concepts and supporting files as downloads.
+
+Use ad-maker to generate one Meta feed ad from this brief and the attached
+product photo and logo. Use the native image tool.
+
+Use ad-maker2 to generate one static ad from this finished concept and attached
+assets. Preserve its copy, claims, audience, and angle. Skip brainstorming.
+```
+
+Replace the example URL with a real product page; attach approved assets and
+supply the brief for the maker requests. No terminal commands or YAML authoring
+are needed for ordinary native image requests. `ad-maker2` remains an explicitly
+requested alternative; the default brainstorm handoff remains `ad-maker`.
+
+| Workflow | Required capabilities |
+| --- | --- |
+| ad-brainstorm | Page fetching or supplied product material, actual image viewing, shipped scripts, Python execution, writable files, and artifact delivery |
+| ad-maker ordinary image | Readable brief/resources, supplied asset viewing, and a native image generator (or explicitly configured API route) |
+| ad-maker production/gallery | Above, plus executable compiler/scorer, PyYAML, and packaged presets |
+| ad-maker2 | Applicable ad-maker capabilities plus pinned guide access and actual viewing of format examples |
+| Exact product PNG compositing | Actual compositing capability, such as the helper with Pillow; generative editing is not pixel-exact compositing |
+
+Tool availability varies by account, session, and workspace policy. Missing
+required tools produce a specific blocker; validation is never replaced by an
+invented score. No skill asks teammates to paste API keys into chat. Reference
+images must actually reach the generation tool; writing a filename in a prompt
+alone does not attach it. Generated images and files are returned through the
+host's image/download interface.
+
+The repo includes sandbox execution tests and a [workspace acceptance checklist](docs/chatgpt-workspace-checks.md).
+A successful repo test run does not establish that your workspace import,
+permissions, native generation, or download links have been tested there.
 
 ### Codex
 
@@ -41,7 +111,7 @@ Verify, then start a new chat (or restart Codex Desktop) so the updated skills a
 codex plugin list
 ```
 
-You should see `codex-ad@codex-ad  installed, enabled  0.2.2`.
+You should see `codex-ad@codex-ad  installed, enabled  0.3.0`.
 
 To pull a newer release later:
 
@@ -101,9 +171,10 @@ Code only, so the five steps above are the whole flow.
 
 `ad-brainstorm` is built for these sandboxes: its scripts are Python stdlib
 only, make no network calls, and take explicit file paths. `ad-maker`'s prompt
-and scoring workflow runs there too; its `composite_product.py` needs Pillow and
-its `generate_image.py` needs network access, so those two scripts are
-Codex/Claude Code only.
+and scoring workflow requires its packaged files, Python, and PyYAML;
+`composite_product.py` additionally needs Pillow. Native image generation is
+used when exposed. The optional API helper needs network access and configured
+credentials; capabilities are checked rather than assumed from the host name.
 
 ### Upgrading from 0.1.x
 
@@ -376,19 +447,20 @@ visual format to its layout and visual treatment.
 A clear brief goes directly to format-guided prompt/image generation.
 Brainstorming is an add-on only when creative direction is missing or requested.
 It does not scrape product URLs or replace the existing skills or their handoff.
-Codex automatic invocation is disabled for ad-maker2; use its name explicitly.
+Automatic invocation is disabled in its OpenAI skill metadata; use ad-maker2
+explicitly in ChatGPT/Work or `$ad-maker2` in Codex.
 
 The skill fetches classification/execution guides and visually studies examples
 from [Visual Formats at commit 498444b](https://github.com/alyshadotmd/visual-formats/tree/498444b7fdc4da674f07d8b0432c32a24b5062c9).
 Every concept uses a documented still-compatible format. Outputs include source
 receipts and format-specific checks alongside the existing prompt/image outputs.
-Network access (or a verified cache), image viewing, and the bundled ad-maker
-references/helpers are required. Missing sources or incompatible fixed inputs
-are reported instead of silently bypassing the format requirements. Actual image
-generation uses the same generation access and settings as ad-maker.
+Pinned-source access (or a provenance-verified cache/resource), image viewing,
+and the bundled ad-maker resources are required. Missing sources or incompatible fixed inputs
+are reported instead of silently bypassing the format requirements. Image generation
+uses the shared native/API routing. Native tools may expose different controls
+from the API; unsupported exact settings are reported before generation.
 
-This release adds the skill; it does not establish better ad performance or
-include a comparison harness.
+The skill does not establish better ad performance or include a comparison harness.
 
 ---
 
@@ -402,13 +474,17 @@ claude plugin validate plugins/codex-ad
 ```
 
 Two marketplace manifests must stay in sync — `.claude-plugin/marketplace.json`
-for Claude Code and `.agents/plugins/marketplace.json` for Codex. The test suite
+for Claude Code and `.agents/plugins/marketplace.json` for Codex and ChatGPT
+workspace import. The test suite
 enforces that they agree and that both resolve to real plugin directories.
 
 ## Notes
 
 - `ad-brainstorm` needs no API key at any step.
-- Real image generation in `ad-maker` and `ad-maker2` requires `OPENAI_API_KEY`; dry-run mode
-  does not call the API.
+- Native image generation in `ad-maker` and `ad-maker2` uses the host's existing
+  access and limits. Only the explicit Python API route requires
+  `OPENAI_API_KEY` in the execution environment; dry-run mode makes no API call.
+- Native generation does not promise the API helper's model, size, or quality
+  controls. Required unsupported settings must be resolved before generating.
 - Product compositing uses Pillow and should only be run on image files from
   trusted campaign folders.

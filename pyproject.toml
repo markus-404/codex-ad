@@ -1,6 +1,6 @@
 [project]
 name = "codex-ad"
-version = "0.2.2"
+version = "0.3.0"
 description = "Shareable ad creative plugin with concept brainstorming and static ad prompt generation"
 requires-python = ">=3.9"
 dependencies = [

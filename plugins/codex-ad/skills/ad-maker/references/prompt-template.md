@@ -28,7 +28,7 @@ Pass authored slots to `scripts/compile_prompt.py` with `--visual` and `--layout
 ## Rules
 
 - Target a maximum of 4000 characters.
-- Address reference images by ordered index, starting at `uploaded logo #0` when a logo is provided.
+- Address reference images by ordered index, starting at `uploaded logo #0` when a logo is provided. Map these indices to actual images passed to the generator; an index in text alone is not an attachment.
 - Quote every text string that should appear in the final ad.
 - Repeat required copy once in `Layout` and once in `Text`.
 - Use named fonts from brand guidelines.
@@ -37,8 +37,8 @@ Pass authored slots to `scripts/compile_prompt.py` with `--visual` and `--layout
 
 ## Negative prompt
 
-Negative prompt must include:
-- Do not use logos other than uploaded #0.
+Negative prompt must include (use "Do not add a logo" when no logo is supplied):
+- Do not use logos other than uploaded #0 when that image is the supplied logo.
 - Do not restyle, redraw, re-letter, or substitute the logo or wordmark.
 - No garbled typography, distorted logo, or extraneous watermarks.
 - No unrelated or competing product visuals.

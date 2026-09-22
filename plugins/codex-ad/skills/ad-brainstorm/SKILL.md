@@ -5,8 +5,11 @@ description: Takes a single product URL, scrapes the product page, analyzes the 
 
 # ad-brainstorm — One URL to 100 Concepts
 
-Runs in Claude Code, Codex, Claude.ai, and Cowork. The image analysis uses the
-host model's own vision — there is no external vision API and no API key to set up.
+Supports ChatGPT, ChatGPT Work, Codex, Claude Code, Claude.ai, and Cowork when
+the required tools and packaged resources are available. Image analysis uses
+the host model's vision — no external vision API or API key is needed.
+Read [host runtime](references/host-runtime.md) before starting; it covers
+attachments, resource-backed installs, Python tools, and downloadable outputs.
 
 ## When to Activate
 
@@ -21,10 +24,14 @@ Two path roots are used below and they are not the same thing:
 - **`$SKILL_DIR`** — the directory holding this SKILL.md, with `references/` and
   `scripts/` beside it. Resolve it once at the start and reuse it. It is
   `${CLAUDE_PLUGIN_ROOT}/skills/ad-brainstorm` in Claude Code, the installed
-  plugin's skill path in Codex, and the uploaded skill folder on claude.ai. Never
+  plugin's skill path in Codex, and the uploaded skill folder on claude.ai. In
+  resource-backed ChatGPT/Work sessions, read the host-provided skill resource
+  identifiers and materialize the actual scripts in a writable session directory
+  when Python needs files. Do not invent filesystem paths from resource URIs. Never
   assume it is under the user's working directory — an installed plugin is not.
-- **`output/[slug]/`** — relative to the user's current working directory. This is
-  their deliverable and belongs in their project, never inside `$SKILL_DIR`.
+- **`output/[slug]/`** — relative to the user's current working directory on local
+  hosts, or a writable session/artifact directory in cloud ChatGPT/Work. This is
+  their deliverable, never an installed skill directory. Return real download links.
 
 The scripts take explicit `--analysis` / `--concepts` / `--out` paths and never
 read the working directory, so only the script path itself needs resolving.
@@ -46,12 +53,13 @@ slugify the scraped product title instead. Every output path below uses this slu
 
 ### 2. Scrape the page
 
-Read `references/scrape-routes.md` and work the routes in order. Route A is host-native
-and works in every environment; B and C are shell fallbacks that produce better image URLs
-where a shell with network access exists.
+Read `references/scrape-routes.md` and use the routes supported by the current
+session. Route A uses available host browsing/fetch; B and C require a shell with
+outbound network. Check those capabilities separately.
 
 Save the result to `output/[slug]/scraped.json`. On total failure, stop and ask the user
-to paste the details — never proceed on empty data.
+to supply product details and images tied to the product URL — never proceed on
+empty data. Identify supplied material as user-provided, not live-scraped evidence.
 
 ### 3. Look at the product images
 
@@ -74,13 +82,19 @@ has never shot. They only get sharp if the per-image reads were specific first.
 
 ### 5. Validate the analysis — hard gate
 
+Use the shell command below or the equivalent Python-tool call in
+[host runtime](references/host-runtime.md). Both execute the same packaged validator.
+
 ```bash
 python3 "$SKILL_DIR/scripts/validate_analysis.py" \
   --analysis output/[slug]/analysis.json
 ```
 
 Exit 0 to continue. On failure the script prints every violation with a field path and a
-score breakdown. Fix the named fields and re-run. Do not proceed past a red gate, and do not
+score breakdown. In a Python tool, require the returned `passed` field to be true.
+Fix the named fields and re-run. If the runtime or script is unavailable, stop at
+this gate and label the analysis unvalidated; do not continue into the concept grid.
+Do not proceed past a red gate, and do not
 lower `--min-score` to get through it — the score measures whether the analysis is specific
 enough to ground 100 distinct concepts, which is the whole premise of the skill.
 
@@ -123,6 +137,9 @@ Spread the citations: a run where all 100 concepts cite the same field scores ne
 
 ### 9. Validate the concepts — hard gate
 
+The Python-tool alternative in [host runtime](references/host-runtime.md) keeps
+the same threshold, inputs, and checks. No model-estimated validation is allowed.
+
 ```bash
 python3 "$SKILL_DIR/scripts/validate_concepts.py" \
   --concepts output/[slug]/concepts.json \
@@ -139,6 +156,9 @@ rewordings of each other. `visual_variety` low means one visual style got recycl
 cells — not the whole grid — and re-run.
 
 ### 10. Render and summarize
+
+Use this shell command or the packaged renderer's Python function described in
+[host runtime](references/host-runtime.md), after both gates pass.
 
 ```bash
 python3 "$SKILL_DIR/scripts/render_concepts.py" \
@@ -169,6 +189,12 @@ Top 5 Picks (biggest UGC gap + highest-signal formats):
   1. [Concept ID] — [hook]
   2. ...
 ```
+
+In ChatGPT/Work, attach downloadable `concepts.json`, rendered `concepts.md`,
+analysis, scraped inputs, and audience map (or a ZIP of those deliverables), plus
+the top-five summary. Do not paste all 100 concepts instead of creating requested
+files, or claim files exist before creating them. If artifact delivery is blocked,
+report that limitation and preserve any completed files for the next supported step.
 
 ### 11. Offer to chain
 
