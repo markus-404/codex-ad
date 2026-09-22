@@ -72,10 +72,10 @@ def test_project_version_matches_plugin_version():
     assert 'version = "{0}"'.format(codex["version"]) in pyproject
 
 
-def test_both_skills_ship_in_the_one_plugin():
-    """One install must deliver both skills - they are not separate plugins."""
+def test_all_skills_ship_in_the_one_plugin():
+    """One install must deliver all three skills, not separate plugins."""
     skills = {p.name for p in (PLUGIN / "skills").iterdir() if p.is_dir()}
-    assert skills == {"ad-brainstorm", "ad-maker"}
+    assert skills == {"ad-brainstorm", "ad-maker", "ad-maker2"}
     for skill in skills:
         assert (PLUGIN / "skills" / skill / "SKILL.md").exists()
 

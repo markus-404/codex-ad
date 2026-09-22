@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "codex-ad",
-      "description": "Two skills: ad-brainstorm turns one product URL into a validated 10x10 grid of ad concepts grounded in the product's real photography; ad-maker turns a concept or brief into six-slot static ad prompts with deterministic quality scorecards.",
+      "description": "Three skills: ad-brainstorm turns one product URL into a validated 10x10 grid of ad concepts grounded in the product's real photography; ad-maker turns a concept or brief into six-slot static ad prompts with deterministic quality scorecards. ad-maker2 adds explicitly requested, format-guided static generation and optional brainstorming.",
       "source": "./plugins/codex-ad",
       "category": "productivity",
       "homepage": "https://github.com/markus-404/codex-ad/tree/main/plugins/codex-ad"

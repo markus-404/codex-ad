@@ -1,0 +1,6 @@
+interface:
+  display_name: "ad_maker2"
+  short_description: "Static ads grounded in visual format guides"
+  default_prompt: "Use $ad-maker2 to generate a static ad from this researched brief, using documented visual formats and brainstorming only if creative direction is missing."
+policy:
+  allow_implicit_invocation: false

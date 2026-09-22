@@ -1,17 +1,18 @@
 # codex-ad
 
-`codex-ad` is one plugin containing two ad-creative skills.
+`codex-ad` is one plugin containing three ad-creative skills.
 
 | Skill | What it does | Start it with |
 | --- | --- | --- |
 | **`ad-brainstorm`** | Turns one product URL into 100 ad concepts across a 10 format x 10 angle grid, grounded in a shot-by-shot analysis of the product's real photography. | `Run ad-brainstorm on <product URL>` |
 | **`ad-maker`** | Turns marketing context into structured static ad prompts, SKU gallery prompt libraries, ordered reference image lists, platform-aware layouts, variants, iteration ladders, readiness scorecards, and post-generation QA refinements. | `Use ad-maker to ...` |
+| **`ad-maker2`** | Experimental static generation from researched briefs or finished concepts, with pinned visual-format guides and optional brainstorming. | `Use $ad-maker2 to ...` |
 
 `ad-brainstorm` produces the concepts; `ad-maker` turns a chosen concept into a
-production prompt. One install delivers both, and each works on its own.
+production prompt. One install delivers all three. The existing ad-brainstorm → ad-maker handoff is unchanged; ad-maker2 is selected explicitly and reuses the bundled ad-maker generation helpers.
 
-Neither skill needs an API key to run its analysis or validation. Only actual
-image *generation* in `ad-maker` calls an external API — see [Notes](#notes).
+The skills need no API key for analysis or validation. Actual
+image *generation* in `ad-maker` and `ad-maker2` calls an external API — see [Notes](#notes).
 
 ---
 
@@ -34,13 +35,13 @@ codex plugin marketplace add .
 codex plugin add codex-ad@codex-ad
 ```
 
-Verify, then start a new chat (or restart Codex Desktop) so both skills load:
+Verify, then start a new chat (or restart Codex Desktop) so the updated skills are available:
 
 ```bash
 codex plugin list
 ```
 
-You should see `codex-ad@codex-ad  installed, enabled  0.2.1`.
+You should see `codex-ad@codex-ad  installed, enabled  0.2.2`.
 
 To pull a newer release later:
 
@@ -65,13 +66,13 @@ claude plugin install codex-ad@codex-ad
 /plugin install codex-ad@codex-ad
 ```
 
-Confirm both skills registered:
+Confirm all three skills registered:
 
 ```bash
 claude plugin details codex-ad
 ```
 
-Expected: `Skills (2)  ad-brainstorm, ad-maker`.
+Expected: `Skills (3)  ad-brainstorm, ad-maker, ad-maker2`.
 
 To pull a newer release later:
 
@@ -93,7 +94,7 @@ this GitHub repo, and the bundled skills come with it:
 4. Choose **Add from a repository** and enter: `markus-404/codex-ad`
 5. Install **codex-ad**
 
-Start a new chat and both skills are available.
+Start a new chat and the three skills are available.
 
 There is no chat command that installs a plugin here — `/plugin` works in Claude
 Code only, so the five steps above are the whole flow.
@@ -361,6 +362,36 @@ python3 plugins/codex-ad/skills/ad-maker/scripts/generate_image.py \
 
 ---
 
+## Skill 3 — `ad-maker2`
+
+Explicitly invoke the experimental skill with a researched product brief or a
+finished concept:
+
+```text
+Use $ad-maker2 to generate a static Meta feed ad from this finished concept.
+Preserve the supplied copy, claims, audience, and angle; apply a compatible
+visual format to its layout and visual treatment.
+```
+
+A clear brief goes directly to format-guided prompt/image generation.
+Brainstorming is an add-on only when creative direction is missing or requested.
+It does not scrape product URLs or replace the existing skills or their handoff.
+Codex automatic invocation is disabled for ad-maker2; use its name explicitly.
+
+The skill fetches classification/execution guides and visually studies examples
+from [Visual Formats at commit 498444b](https://github.com/alyshadotmd/visual-formats/tree/498444b7fdc4da674f07d8b0432c32a24b5062c9).
+Every concept uses a documented still-compatible format. Outputs include source
+receipts and format-specific checks alongside the existing prompt/image outputs.
+Network access (or a verified cache), image viewing, and the bundled ad-maker
+references/helpers are required. Missing sources or incompatible fixed inputs
+are reported instead of silently bypassing the format requirements. Actual image
+generation uses the same generation access and settings as ad-maker.
+
+This release adds the skill; it does not establish better ad performance or
+include a comparison harness.
+
+---
+
 ## Develop and validate
 
 ```bash
@@ -377,7 +408,7 @@ enforces that they agree and that both resolve to real plugin directories.
 ## Notes
 
 - `ad-brainstorm` needs no API key at any step.
-- Real image generation in `ad-maker` requires `OPENAI_API_KEY`; dry-run mode
+- Real image generation in `ad-maker` and `ad-maker2` requires `OPENAI_API_KEY`; dry-run mode
   does not call the API.
 - Product compositing uses Pillow and should only be run on image files from
   trusted campaign folders.
