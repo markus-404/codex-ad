@@ -1,7 +1,7 @@
 {
   "name": "codex-ad",
-  "version": "0.3.0",
-  "description": "Ad creative skills for ChatGPT, ChatGPT Work, Codex, and Claude: product-grounded concepts, static ad generation, and format-guided creative workflows.",
+  "version": "0.3.1",
+  "description": "Ad creative skills for Codex and ChatGPT Work: product-grounded concepts, static ad generation, and format-guided creative workflows.",
   "author": {
     "name": "markus-404"
   },

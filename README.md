@@ -1,6 +1,6 @@
 # codex-ad
 
-`codex-ad` is one plugin containing three ad-creative skills.
+`codex-ad` provides three ad-creative skills for **Codex and ChatGPT Work**.
 
 | Skill | What it does | Start it with |
 | --- | --- | --- |
@@ -9,7 +9,7 @@
 | **`ad-maker2`** | Experimental static generation from researched briefs or finished concepts, with pinned visual-format guides and optional brainstorming. | `Use $ad-maker2 to ...` |
 
 `ad-brainstorm` produces the concepts; `ad-maker` turns a chosen concept into a
-production prompt. One install delivers all three. The existing ad-brainstorm → ad-maker handoff is unchanged; ad-maker2 is selected explicitly and reuses the bundled ad-maker generation helpers.
+production prompt. The package includes all three. The existing ad-brainstorm → ad-maker handoff is unchanged; ad-maker2 is selected explicitly and reuses the bundled ad-maker generation helpers.
 
 No API key is needed for analysis, validation, or native image generation.
 `ad-maker` and `ad-maker2` use an available host image generator; the optional
@@ -17,190 +17,235 @@ Python API route requires configured API credentials. See [Notes](#notes).
 
 ---
 
-## Install
+## Install and update
 
-All hosts use this repository: `markus-404/codex-ad`. For teammates in one
-ChatGPT workspace, an admin imports the GitHub marketplace once. Available
-tools and workspace policies determine which workflows can run.
+This project targets **Codex** and **ChatGPT Work**. Use the prompts below in
+those products; you do not need to type commands into a separate terminal.
 
-### ChatGPT and ChatGPT Work — shared workspace
+| Host | Setup scope | How to start a skill |
+| --- | --- | --- |
+| Codex local app or CLI | Installed plugin, available in new sessions | Select the installed skill or use `$ad-brainstorm`, `$ad-maker`, or `$ad-maker2` |
+| ChatGPT Work in the browser | Persistent plugin created through Plugin Creator | Open the returned plugin link, install if prompted, then start a new Work chat |
 
-A workspace admin can import the existing skills-only plugin directly from
-GitHub. No MCP server, developer-mode connection, or teammate API key is needed
-for the native workflow.
+**ChatGPT Work prerequisite:** enable the **Plugin Creator** plugin and select it
+with `@` before sending the Work prompts below. Its connected creation action
+uploads a plugin archive and returns a persistent ChatGPT plugin ID and link.
+This is different from copying files into a temporary Work session. If Plugin
+Creator is unavailable to your account, the prompt must stop with that blocker.
 
-1. Open **Admin → Plugins → Add → Import marketplace**.
-2. Set **Source** to `https://github.com/markus-404/codex-ad`.
-3. Leave **Path** empty: the marketplace is at the repository root. Do not enter
-   `.agents/plugins/marketplace.json` or the plugin subdirectory here.
-4. Set **Branch, tag, or commit** to `main` for updates, or an approved commit to
-   pin a release. Authorize a GitHub account with read access when prompted.
-5. Review **Import results**, open `codex-ad`, and set the installation policy
-   to **Available** or **Installed** for the intended workspace roles.
-6. Teammates select that workspace, install the plugin from **Plugins** if it
-   is only Available, and start a new chat with it enabled.
+After creation, open the returned link and select **Install** if prompted, then
+start a new Work chat. Creation and package read-back have been verified with
+Plugin Creator; automatic enablement and skill execution in a fresh browser
+chat have not yet been verified. Do not assume creation means installation is
+complete. See [ChatGPT plugin usage](https://learn.chatgpt.com/docs/plugins).
 
-Repository installation/authentication policies do not set workspace role
-policies. Admins configure those in ChatGPT. To update after a repository push,
-open **Admin → Plugins → Marketplaces**, select the imported marketplace, and
-choose **Sync now** (automatic daily sync is also supported). A pinned commit
-stays pinned. This workspace import does not publish a public directory listing.
+### Codex — installation prompt
 
-These steps follow the official [workspace plugin management documentation](https://learn.chatgpt.com/docs/enterprise/plugin-management).
+Paste into a local Codex chat:
 
-Use **Work** for the complete research/100-concept workflow, galleries, and
-multi-file deliverables. Chat can handle supported image/prompt requests with
-the tools exposed in that session. Type `@` and select the installed plugin or
-skill from the picker; naming the skill explicitly in the request also makes
-intent clear. Codex's `$skill-name` notation is used in the CLI examples below.
+```text
+Install the codex-ad plugin from https://github.com/markus-404/codex-ad
+for my local Codex environment. Perform the setup for me.
 
-Teammate starter requests:
+Check whether the Codex CLI is available. If it is, run:
+codex plugin marketplace add markus-404/codex-ad
+codex plugin add codex-ad@codex-ad
+codex plugin list
+
+Check that codex-ad@codex-ad is installed and enabled, and report the installed
+version. Preserve my other plugins and campaign files. If the required CLI or
+permissions are unavailable, report the blocker rather than claiming success.
+Tell me to start a new Codex chat to load the three bundled skills:
+ad-brainstorm, ad-maker, and ad-maker2.
+```
+
+### Codex — update prompt
+
+Paste into a local Codex chat with the plugin already installed:
+
+```text
+Update my local codex-ad plugin from markus-404/codex-ad.
+First inspect the installed version with codex plugin list and the configured
+source with codex plugin marketplace list.
+If the source differs from this repository or is intentionally pinned, explain
+that before changing it. Otherwise run:
+codex plugin marketplace upgrade codex-ad
+codex plugin add codex-ad@codex-ad
+codex plugin list
+
+Report the previous and resulting versions and any errors. Preserve my other
+plugins and campaign files. Do not claim an update if the commands failed.
+Tell me to start a new Codex chat to load the updated skills.
+```
+
+### ChatGPT Work (browser) — installation prompt
+
+Select **Plugin Creator** with `@`, then paste:
+
+```text
+Use Plugin Creator to create a persistent codex-ad plugin from
+https://github.com/markus-404/codex-ad in my account. Do the packaging and
+creation for me; do not ask me to open Terminal or install Codex CLI.
+
+First check for an existing codex-ad plugin that I own. If one exists, use its
+exact ID and the update workflow instead of creating a duplicate. If multiple
+matches exist, ask which one to update.
+
+Retrieve a snapshot of main, recording the commit SHA when verifiable. If you
+cannot retrieve files, ask me to attach GitHub's Code > Download ZIP archive.
+Use only plugins/codex-ad as the plugin package. Keep all three skills and
+all their scripts, references, presets, and assets, preserving relative paths.
+
+Use the portable root plugin.json. If the snapshot has only the legacy
+.codex-plugin/plugin.json, convert it to Agent Plugins 1.0 with the same name,
+version, description, author, and complete interface/defaultPrompt values under
+extensions.com.openai. Preserve the compatibility manifest. Do not add an MCP
+server or external app dependency.
+
+Package exactly one codex-ad directory as a ZIP, excluding caches and unrelated
+repository files. Use Plugin Creator's authenticated creation action to upload
+that archive. Do not substitute session files or local marketplace registration.
+If the creation action is unavailable or fails, report the actual blocker.
+
+After success, read the saved plugin back and verify the manifest and all three
+skills. Return the real plugin link, plugin ID, version, release ID, and creation
+status. Tell me whether I still need to click Install and start a new Work chat.
+Do not claim automatic enablement or successful skill execution without checking.
+```
+
+### ChatGPT Work (browser) — update prompt
+
+Select **Plugin Creator** with `@`. Include the plugin link from installation
+if discovery cannot identify it unambiguously.
+
+```text
+Use Plugin Creator to update my existing codex-ad plugin from
+https://github.com/markus-404/codex-ad. Update the same persistent plugin;
+do not create a duplicate or change its sharing.
+
+Resolve its exact plugin ID and read its current source and current release ID.
+Retrieve the repository's main snapshot, or ask for its ZIP if retrieval fails.
+Compare plugins/codex-ad with the saved release. Preserve my existing metadata,
+assets, and integrations unless they are part of this requested upstream update;
+explain conflicts or local customizations before overwriting them.
+
+Keep the package name unchanged. Use the portable plugin.json and assign a
+strict semantic version greater than the current saved release when content
+changes. Synchronize any compatibility manifest. Preserve all starter prompts
+and every required resource, including ad-maker2's shared ad-maker files.
+If there are no content changes, report that without publishing another release.
+
+Package the updated manifest and changed files. Call Plugin Creator's update
+operation with the exact plugin ID and the observed current release ID as the
+concurrency guard. If files need deletion, stop and explain: the update operation
+overlays files and does not delete omitted files. On a release conflict, reread
+and reconcile the current source before retrying. Do not retry an access denial.
+
+After success, read back the saved source and verify the new release and changed
+files. Return the same plugin link, old/new versions, and new release ID. Preserve
+campaign files and outputs. Tell me to start a new Work chat for the updated skills.
+```
+
+Updates are explicit snapshots; a GitHub push does not automatically refresh a
+plugin created through Plugin Creator. Each user updates their own copy with the
+prompt above. Availability of Plugin Creator and the underlying workflow tools
+can vary by account.
+
+### Start creating
+
+After setup, use a real single-product URL:
 
 ```text
 Use ad-brainstorm on https://example.com/products/my-product.
 Return the validated concepts and supporting files as downloads.
+```
 
+Or attach a product photo, logo, and brief:
+
+```text
 Use ad-maker to generate one Meta feed ad from this brief and the attached
 product photo and logo. Use the native image tool.
+```
 
+For the experimental alternative:
+
+```text
 Use ad-maker2 to generate one static ad from this finished concept and attached
 assets. Preserve its copy, claims, audience, and angle. Skip brainstorming.
 ```
 
-Replace the example URL with a real product page; attach approved assets and
-supply the brief for the maker requests. No terminal commands or YAML authoring
-are needed for ordinary native image requests. `ad-maker2` remains an explicitly
-requested alternative; the default brainstorm handoff remains `ad-maker`.
+`ad-maker2` is selected explicitly; the normal brainstorm handoff uses `ad-maker`.
 
 | Workflow | Required capabilities |
 | --- | --- |
 | ad-brainstorm | Page fetching or supplied product material, actual image viewing, shipped scripts, Python execution, writable files, and artifact delivery |
-| ad-maker ordinary image | Readable brief/resources, supplied asset viewing, and a native image generator (or explicitly configured API route) |
+| ad-maker ordinary image | Readable brief/resources, supplied asset viewing, and a native image generator |
 | ad-maker production/gallery | Above, plus executable compiler/scorer, PyYAML, and packaged presets |
 | ad-maker2 | Applicable ad-maker capabilities plus pinned guide access and actual viewing of format examples |
-| Exact product PNG compositing | Actual compositing capability, such as the helper with Pillow; generative editing is not pixel-exact compositing |
+| Exact product PNG compositing | Actual compositing capability, such as the helper with Pillow |
 
-Tool availability varies by account, session, and workspace policy. Missing
-required tools produce a specific blocker; validation is never replaced by an
-invented score. No skill asks teammates to paste API keys into chat. Reference
-images must actually reach the generation tool; writing a filename in a prompt
-alone does not attach it. Generated images and files are returned through the
-host's image/download interface.
+Missing required tools are blockers, not permission to invent validation scores
+or generated outputs. Reference images must actually reach the image tool.
+Repository tests do not establish that setup, generation, or downloads work in
+your particular Work session.
 
-The repo includes sandbox execution tests and a [workspace acceptance checklist](docs/chatgpt-workspace-checks.md).
-A successful repo test run does not establish that your workspace import,
-permissions, native generation, or download links have been tested there.
+### Codex — upgrading from 0.1.x
 
-### Codex
+Before 0.2.0, ad-maker shipped as a separate plugin. Ask Codex to remove the old
+`ad-maker@codex-ad` install, refresh the `codex-ad` marketplace, and install
+`codex-ad@codex-ad`. Preserve campaign files and start a new chat afterward.
 
-```bash
-codex plugin marketplace add markus-404/codex-ad
-codex plugin add codex-ad@codex-ad
-```
 
-From a local checkout instead of GitHub:
+## Uninstall
 
-```bash
-codex plugin marketplace add .
-codex plugin add codex-ad@codex-ad
-```
+### Codex — uninstall prompt
 
-Verify, then start a new chat (or restart Codex Desktop) so the updated skills are available:
-
-```bash
-codex plugin list
-```
-
-You should see `codex-ad@codex-ad  installed, enabled  0.3.0`.
-
-To pull a newer release later:
-
-```bash
-codex plugin marketplace upgrade codex-ad
-codex plugin add codex-ad@codex-ad
-```
-
-### Claude Code
-
-Works from the shell:
-
-```bash
-claude plugin marketplace add markus-404/codex-ad
-claude plugin install codex-ad@codex-ad
-```
-
-…or from inside a session:
+Paste into Codex:
 
 ```text
-/plugin marketplace add markus-404/codex-ad
-/plugin install codex-ad@codex-ad
+Uninstall codex-ad@codex-ad from my local Codex environment using:
+codex plugin remove codex-ad@codex-ad
+
+Verify the result. Preserve my campaign folders, generated outputs, other
+plugins, and marketplace configuration. Tell me to start a new chat or restart
+Codex so its skill picker refreshes.
 ```
 
-Confirm all three skills registered:
+To remove only the legacy standalone ad-maker that can cause a duplicate
+`ad_maker` entry, ask Codex:
 
-```bash
-claude plugin details codex-ad
-```
-
-Expected: `Skills (3)  ad-brainstorm, ad-maker, ad-maker2`.
-
-To pull a newer release later:
-
-```bash
-claude plugin marketplace update codex-ad
-claude plugin update codex-ad
-```
-
-Restart the session to apply.
-
-### claude.ai, Claude Desktop, and Cowork
-
-No download, no zip, no terminal. These hosts install the plugin straight from
-this GitHub repo, and the bundled skills come with it:
-
-1. Open **Customize** in the left sidebar
-2. Go to the **Plugins** tab
-3. Under **Personal plugins**, click **+** → **Add marketplace**
-4. Choose **Add from a repository** and enter: `markus-404/codex-ad`
-5. Install **codex-ad**
-
-Start a new chat and the three skills are available.
-
-There is no chat command that installs a plugin here — `/plugin` works in Claude
-Code only, so the five steps above are the whole flow.
-
-`ad-brainstorm` is built for these sandboxes: its scripts are Python stdlib
-only, make no network calls, and take explicit file paths. `ad-maker`'s prompt
-and scoring workflow requires its packaged files, Python, and PyYAML;
-`composite_product.py` additionally needs Pillow. Native image generation is
-used when exposed. The optional API helper needs network access and configured
-credentials; capabilities are checked rather than assumed from the host name.
-
-### Upgrading from 0.1.x
-
-Releases before 0.2.0 shipped `ad-maker` as its own plugin. 0.2.0 merges it with
-`ad-brainstorm` into one `codex-ad` plugin, so the old plugin name no longer
-resolves. Remove the old install first:
-
-```bash
-# Codex
+```text
+Remove only the legacy ad-maker@codex-ad plugin using:
 codex plugin remove ad-maker@codex-ad
-codex plugin marketplace upgrade codex-ad
-codex plugin add codex-ad@codex-ad
+
+Keep codex-ad@codex-ad and all campaign files. Verify removal and tell me to
+restart Codex. The current codex-ad plugin already includes ad-maker.
 ```
 
-```bash
-# Claude Code
-claude plugin uninstall ad-maker@codex-ad
-claude plugin marketplace update codex-ad
-claude plugin install codex-ad@codex-ad
+If both a GitHub marketplace copy and a Plugin Creator copy are enabled, inspect
+their sources in Plugins and uninstall the unwanted copy. Match the source or
+plugin ID, not just the shared display name.
+
+### ChatGPT Work (browser)
+
+Open **Plugins**, find your installed **codex_ad**, open its details, and select
+**Uninstall plugin**. Use the link returned during creation to identify the
+correct copy. Start a new chat afterward.
+
+You can also ask Work, when Plugin Management is available:
+
+```text
+Uninstall my codex_ad plugin identified by this plugin link: [paste plugin link].
+Resolve that exact plugin before uninstalling. Preserve other plugins, campaign
+files, and generated outputs. Report whether uninstall succeeded; do not claim
+the underlying created plugin or its release history was deleted.
 ```
 
-On claude.ai, Claude Desktop, and Cowork, remove the old `ad-maker` plugin under
-**Customize → Plugins**, then install `codex-ad` from the same marketplace.
+Uninstallation removes the installed bundle from that environment; it should
+not be confused with deleting the plugin you created. Separately connected
+services are not disconnected by uninstalling a plugin. See the official
+[removal instructions](https://learn.chatgpt.com/docs/plugins#remove-a-plugin).
 
-Nothing in your campaign folders changes — the skill names, script names, and
-`output/` layout are all the same.
 
 ---
 
@@ -238,7 +283,8 @@ audience map, then generates one concept per cell of a 10 format x 10 angle
 grid. Image analysis uses the host model's own vision — no external vision API,
 no key to configure.
 
-Output lands in your working directory:
+In Codex, output lands in your working directory. In browser Work, use a writable
+session directory and return the files as downloads:
 
 ```
 output/[slug]/concepts.json     # source of truth
@@ -304,8 +350,9 @@ Marketing context in, production-ready static ad prompts and SKU galleries out.
 
 ### Trigger it
 
-Open your host in any campaign folder and write plain text. In Codex, `$ad-maker`
-names the skill explicitly:
+In Codex, open a campaign folder; in browser Work, attach your brief and assets.
+The examples below use Codex’s `$ad-maker` notation. In browser Work, write
+`Use ad-maker` and refer to attachments instead of local paths:
 
 ```text
 Use $ad-maker to make a Meta feed ad for this product.
@@ -448,7 +495,7 @@ A clear brief goes directly to format-guided prompt/image generation.
 Brainstorming is an add-on only when creative direction is missing or requested.
 It does not scrape product URLs or replace the existing skills or their handoff.
 Automatic invocation is disabled in its OpenAI skill metadata; use ad-maker2
-explicitly in ChatGPT/Work or `$ad-maker2` in Codex.
+explicitly in ChatGPT Work or `$ad-maker2` in Codex.
 
 The skill fetches classification/execution guides and visually studies examples
 from [Visual Formats at commit 498444b](https://github.com/alyshadotmd/visual-formats/tree/498444b7fdc4da674f07d8b0432c32a24b5062c9).
@@ -469,14 +516,12 @@ The skill does not establish better ad performance or include a comparison harne
 ```bash
 python3 -c 'import sys, importlib; pytest=importlib.import_module("pytest"); sys.exit(pytest.main(["-q"]))'
 python3 "$HOME/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py" plugins/codex-ad
-claude plugin validate .
-claude plugin validate plugins/codex-ad
 ```
 
-Two marketplace manifests must stay in sync — `.claude-plugin/marketplace.json`
-for Claude Code and `.agents/plugins/marketplace.json` for Codex and ChatGPT
-workspace import. The test suite
-enforces that they agree and that both resolve to real plugin directories.
+The Codex marketplace is `.agents/plugins/marketplace.json`; its plugin entry
+resolves to `plugins/codex-ad`. Packaging tests check the manifests and bundled
+resources. Host runtime checks supplement these tests; actual Work-session
+setup and image generation require separate end-to-end verification.
 
 ## Notes
 
